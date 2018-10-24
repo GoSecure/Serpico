@@ -1,37 +1,37 @@
 require 'zip'
 require 'sinatra'
+require './config'
 
 ######
 # Template Document Routes
 ######
 
-config_options = JSON.parse(File.read('./config.json'))
 
 # These are the master routes, they control the findings database
 # List Available Templated Findings
 get '/master/findings' do
   @findings = TemplateFindings.all(order: [:title.asc])
   @master = true
-  @dread = config_options['dread']
-  @cvss = config_options['cvss']
-  @cvssv3 = config_options['cvssv3']
-  @riskmatrix = config_options['riskmatrix']
-  @nist800 = config_options['nist800']
+  @dread = Config['dread']
+  @cvss = Config['cvss']
+  @cvssv3 = Config['cvssv3']
+  @riskmatrix = Config['riskmatrix']
+  @nist800 = Config['nist800']
   haml :findings_list
 end
 
 # Create a new templated finding
 get '/master/findings/new' do
   @master = true
-  @languages = config_options['languages']
-  @dread = config_options['dread']
-  @cvss = config_options['cvss']
-  @cvssv3 = config_options['cvssv3']
-  @nist800 = config_options['nist800']
-  @riskmatrix = config_options['riskmatrix']
-  @nessusmap = config_options['nessusmap']
-  @burpmap = config_options['burpmap']
-  @vulnmap = config_options['vulnmap']
+  @languages = Config['languages']
+  @dread = Config['dread']
+  @cvss = Config['cvss']
+  @cvssv3 = Config['cvssv3']
+  @nist800 = Config['nist800']
+  @riskmatrix = Config['riskmatrix']
+  @nessusmap = Config['nessusmap']
+  @burpmap = Config['burpmap']
+  @vulnmap = Config['vulnmap']
 
   haml :findings_edit
 end
@@ -40,11 +40,11 @@ end
 post '/master/findings/new' do
   data = url_escape_hash(request.POST)
 
-  if config_options['dread']
+  if Config['dread']
     data['dread_total'] = data['damage'].to_i + data['reproducability'].to_i + data['exploitability'].to_i + data['affected_users'].to_i + data['discoverability'].to_i
   end
 
-  if config_options['riskmatrix']
+  if Config['riskmatrix']
     if data['severity'] == 'Low'
       severity_val = 0
     elsif data['severity'] == 'Medium'
@@ -65,7 +65,7 @@ post '/master/findings/new' do
   end
 
   # Create NIST800 finding in the main database
-  if(config_options["nist800"])
+  if(Config["nist800"])
     # call nist800 helper function
     data = nist800(data)
   end
@@ -92,28 +92,28 @@ post '/master/findings/new' do
   @newfinding = TemplateFindings.first(title: data['title'], order: [:id.desc], limit: 1)
 
   # save mapping data
-  if config_options['nessusmap'] && nessusdata['pluginid']
+  if Config['nessusmap'] && nessusdata['pluginid']
     nessusdata['templatefindings_id'] = @finding.id
     @nessus = NessusMapping.new(nessusdata)
     @nessus.save
   end
 
-  if config_options['vulnmap'] && vulnmapdata['msf_ref']
+  if Config['vulnmap'] && vulnmapdata['msf_ref']
     vulnmapdata['templatefindings_id'] = @finding.id
     @vulnmappings = VulnMappings.new(vulnmapdata)
     @vulnmappings.save
   end
 
   # save burp mapping data to db
-  if config_options['burpmap']
+  if Config['burpmap']
     burpdata['templatefindings_id'] = @finding.id
     @burp = BurpMapping.new(burpdata)
     @burp.save
   end
 
-  if config_options['cvss']
+  if Config['cvss']
     data = cvss(data, false)
-  elsif config_options['cvssv3']
+  elsif Config['cvssv3']
     data = cvss(data, true)
   end
 
@@ -124,15 +124,15 @@ end
 get '/master/findings/:id/edit' do
   @master = true
 
-  @languages = config_options['languages']
-  @dread = config_options['dread']
-  @cvss = config_options['cvss']
-  @cvssv3 = config_options['cvssv3']
-  @riskmatrix = config_options['riskmatrix']
-  @nist800 = config_options['nist800']
-  @nessusmap = config_options['nessusmap']
-  @burpmap = config_options['burpmap']
-  @vulnmap = config_options['vulnmap']
+  @languages = Config['languages']
+  @dread = Config['dread']
+  @cvss = Config['cvss']
+  @cvssv3 = Config['cvssv3']
+  @riskmatrix = Config['riskmatrix']
+  @nist800 = Config['nist800']
+  @nessusmap = Config['nessusmap']
+  @burpmap = Config['burpmap']
+  @vulnmap = Config['vulnmap']
 
   # Check for kosher name in report name
   id = params[:id]
@@ -168,15 +168,15 @@ post '/master/findings/:id/edit' do
 
   data['title'] = data['title']
 
-  if config_options['dread']
+  if Config['dread']
     data['dread_total'] = data['damage'].to_i + data['reproducability'].to_i + data['exploitability'].to_i + data['affected_users'].to_i + data['discoverability'].to_i
-  elsif config_options['cvss']
+  elsif Config['cvss']
     data = cvss(data, false)
-  elsif config_options['cvssv3']
+  elsif Config['cvssv3']
     data = cvss(data, true)
   end
 
-  if config_options['riskmatrix']
+  if Config['riskmatrix']
     if data['severity'] == 'Low'
       severity_val = 0
     elsif data['severity'] == 'Medium'
@@ -197,7 +197,7 @@ post '/master/findings/:id/edit' do
   end
 
   # Edit NIST800 finding in the main database
-  if(config_options["nist800"])
+  if(Config["nist800"])
     # call nist800 helper function
     data = nist800(data)
   end
@@ -224,19 +224,19 @@ post '/master/findings/:id/edit' do
   @finding.update(data)
 
   # save nessus mapping data to db
-  if config_options['nessusmap']
+  if Config['nessusmap']
     @nessus = NessusMapping.new(nessusdata)
     @nessus.save
   end
 
   # save burp mapping data to db
-  if config_options['burpmap']
+  if Config['burpmap']
     @burp = BurpMapping.new(burpdata)
     @burp.save
   end
 
   # save vuln mapping data to db
-  if config_options['vulnmap']
+  if Config['vulnmap']
     @vulnmappings = VulnMappings.new(vulnmappingdata)
     @vulnmappings.save
   end
