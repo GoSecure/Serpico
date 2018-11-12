@@ -731,72 +731,65 @@
           %h3#modal-label
             Meta Markup
         .modal-body
-          %p
+          %div
             There are markup sets you can use in any field. This text is converted inside of Microsoft Word.
             %p.text-error
               YOU MUST CLOSE ALL TAGS. OTHERWISE YOU CAN DESTROY ALL TEXT FORMATTING. SEE EXAMPLES BELOW.
             %b
               Review the finding "TEST - Markup Tester" for a clear example. As always, press preview to see the finding in Word.
+          %br
           %h2
             {{ URL }}
           %p
             If you place {{ URL }} in any field the text will be hyperlinked, otherwise hyperlinking is ignored.
-            %br
+          %br
           %h2
             &lt;&lt;full_company_name&gt;&gt;
           %p
             If you place &lt;&lt;full_company_name&gt;&gt; in a finding the customer name will be substituted in the finding. This is particularly helpful in the Templated Findings.
-            %br
-            %br
-            %code
-              Overall &lt;&lt;full_company_name&gt;&gt; was found to have a strong...
-            %br
-            %br
-            Will generate the following inside of a report:
-            %br
-            %br
-            %code
-              Overall AcmeCorporation was found to have a strong...
+          %code
+            Overall &lt;&lt;full_company_name&gt;&gt; was found to have a strong...
+          %br
+          %br
+          Will generate the following inside of a report:
+          %br
+          %br
+          %code
+            Overall AcmeCorporation was found to have a strong...
+          %br
+          %br
           %h2
             Bullets
           %p
             Shortcut : CTRL + ALT + w
-            %br
+          %p
             Place the bulleted text inbetween a *- and a -* like so:
-            %br
-            %br
-            %code
-              *- Bulleted text goes here -*
+          %code
+            *- Bulleted text goes here -*
           %h2
             Paragraph Heading Text
           %p
             Shortcut : CTRL + ALT + q
-            %br
+          %p
             Place the heading inbetween a [== and a ==] like so:
-            %br
-            %br
-            %code
-              [== Heading text goes here ==]
+          %code
+            [== Heading text goes here ==]
           %h2
             Italics
           %p
             Shortcut : CTRL + ALT + x
-            %br
+          %p
             Italicize the paragraph containing [~~ and a ~~]:
-            %br
-            %br
-            %code
-              [~~ Italics ~~]
+          %code
+            [~~ Italics ~~]
           %h2
             Code
           %p
-            Shortcut : CTRL + ALT + c
-            %br
+            Shortcut : CTRL + ALT + c=
+          %p
             Place code inbetween a [[[ and a ]]] like below. CODE CANNOT STRETCH MULTIPLE LINES.
-            %br
-            %br
-            %code
-              [[[ code, code goes here ]]]
+          %code
+            [[[ code, code goes here ]]]
       .controls
         %textarea.input-xxlarge.allowMarkupShortcut#overview{ :rows => "10", :name => "overview" }
           - if @finding and @finding.overview
