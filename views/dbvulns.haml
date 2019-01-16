@@ -6,11 +6,11 @@
     This is a read-only view of the first 10k vulnerabilities within Metasploits database.
     %p
     %label.control-label
-      %a.btn.btn-info{ :href => "#vulninfomodal", "data-toggle" => "modal" }
+      %a.btn.btn-info{ href: "#vulninfomodal", "data-toggle" => "modal" }
         More Info
-    .modal.hide.fade#vulninfomodal{ :tabindex => "-1", :role => "dialog", "aria-labelledby" => "modal-label", "aria-hidden" => true }
+    .modal.hide.fade#vulninfomodal{ tabindex: "-1", role: "dialog", "aria-labelledby" => "modal-label", "aria-hidden" => true }
       .modal-header
-        %button.close{ :type => "button", "data-dismiss" => "modal", "aria-hidden" => "true" }
+        %button.close{ type: "button", "data-dismiss" => "modal", "aria-hidden" => "true" }
           x
         %h3#modal-label
           Metasploit Auto Mapping Vulnerabilities
@@ -21,12 +21,12 @@
         %b Vuln ID
         field of a finding in the Findings Database.
         %p
-        %a.btn.btn-default{ :href=> "/master/findings" }
+        %a.btn.btn-default{ href: "/master/findings" }
           Go to Findings Database
         %p
     %br
     .table.table-hover
-      %table{ :style => "width: 90%" }
+      %table{ style: "width: 90%" }
         %thead
           %tr
             %td
@@ -41,11 +41,11 @@
           - if @vulns
             - @vulns.each do |vuln|
               %tr
-                %td.searchable{ :style => "width: 50%", :"data-index" => "#{vuln["name"]}" }
+                %td.searchable{ style: "width: 50%", :"data-index" => "#{vuln["name"]}" }
                   #{vuln["name"]}
-                %td.searchable{ :style => "width: 10%", :"data-index" => "#{vuln["host"]}" }
+                %td.searchable{ style: "width: 10%", :"data-index" => "#{vuln["host"]}" }
                   #{vuln["host"]}
-                %td.searchable{ :style => "width: 5%", :"data-index" => "#{vuln["port"]}" }
+                %td.searchable{ style: "width: 5%", :"data-index" => "#{vuln["port"]}" }
                   #{vuln["port"]}
-                %td.searchable{ :style => "width: 35%", :"data-index" => "#{vuln["refs"]}" }
+                %td.searchable{ style: "width: 35%", :"data-index" => "#{vuln["refs"]}" }
                   #{vuln["refs"]}

@@ -3,40 +3,40 @@
   %h2 Add Template
   %br
 
-  %form{ :method => "post", :action => "/admin/templates/add", :enctype => "multipart/form-data" }
+  %form{ method: "post", action: "/admin/templates/add", enctype: "multipart/form-data" }
     %table
       %tr
         %td
-          %label.col-md-3{ :for => "report_type" }
+          %label.col-md-3{ for: "report_type" }
             Report Type &nbsp;
         %td
-          %input#report_type{ :type => "text", :name => "report_type", :required => true }
+          %input#report_type{ type: "text", name: "report_type", required: true }
       %tr
         %td
-          %label.col-md-3{ :for => "description" }
+          %label.col-md-3{ for: "description" }
             File Description &nbsp;
         %td
-          %input#description{ :type => "text", :name => "description" }
+          %input#description{ type: "text", name: "description" }
       %tr
         %td
-          %label.col-md-3{ :for => "finding_template" }
+          %label.col-md-3{ for: "finding_template" }
             Finding Template &nbsp;
         %td
-          %input#finding_template{ :type => "checkbox", :name => "finding_template" }
+          %input#finding_template{ type: "checkbox", name: "finding_template" }
       %tr
         %td
-          %label.col-md-3{ :for => "status_template" }
+          %label.col-md-3{ for: "status_template" }
             Status Template &nbsp;
         %td
-          %input#status_template{ :type => "checkbox", :name => "status_template" }
+          %input#status_template{ type: "checkbox", name: "status_template" }
       %tr
         %td
-          %label.col-md-3{ :for => "file" }
+          %label.col-md-3{ for: "file" }
             DOCX
         %td
-          %input#file{ :type => "file", :name => "file" }
+          %input#file{ type: "file", name: "file" }
 
     %br
-    %input.btn.btn-default{ :type => "submit", :value => "Add" }
-    %a.btn.btn-default{ :href => "/admin/templates" }
+    %input.btn.btn-default{ type: "submit", value: "Add" }
+    %a.btn.btn-default{ href: "/admin/templates" }
       Cancel

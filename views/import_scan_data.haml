@@ -10,21 +10,21 @@
   %br
     NOTE: All findings are imported via this method, Nessus and Burp plugin ids are not respected
 
-  %form{ :method => "post", :action => "/report/#{@report.id}/import_scan_data", :enctype => "multipart/form-data" }
+  %form{ method: "post", action: "/report/#{@report.id}/import_scan_data", enctype: "multipart/form-data" }
     %table
       %tr
         %td
-          %label.col-md-3{ :for => "file" }
+          %label.col-md-3{ for: "file" }
             Upload File
-          %input#file{ :type => "file", :name => "file" }
+          %input#file{ type: "file", name: "file" }
       %tr
         Scan Data Type&nbsp;
-        %select#type{ :name => "type"}
+        %select#type{ name: "type"}
           - %w[\  Nessus BurpV1 Metasploit NMap].each do |type|
             %option #{type}
     %br
 
     %br
-    %input.btn.btn-default{ :type => "submit", :value => "Upload" }
-    %a.btn.btn-default{ :href => "/report/#{@report.id}/findings" }
+    %input.btn.btn-default{ type: "submit", value: "Upload" }
+    %a.btn.btn-default{ href: "/report/#{@report.id}/findings" }
       Cancel

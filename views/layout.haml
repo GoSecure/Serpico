@@ -1,30 +1,30 @@
 !!!
-%html{ :lang => "en" }
+%html{ lang: "en" }
   %head
-    %script{ :src => "/js/jquery-3.1.1.js" }
-    %script{ :src => "/js/jquery-migrate-3.0.0.min.js" }
-    %script{ :src => "/js/bootstrap-collapse.js" }
-    %script{ :src => "/js/bootstrap-transition.js" }
-    %script{ :src => "/js/bootstrap-alert.js" }
-    %script{ :src => "/js/bootstrap-modal.js" }
-    %script{ :src => "/js/bootstrap-dropdown.js" }
-    %script{ :src => "/js/bootstrap-scrollspy.js" }
-    %script{ :src => "/js/bootstrap-tab.js" }
-    %script{ :src => "/js/bootstrap-tooltip.js" }
-    %script{ :src => "/js/bootstrap-popover.js" }
-    %script{ :src => "/js/bootstrap-button.js" }
-    %script{ :src => "/js/bootstrap-carousel.js" }
-    %script{ :src => "/js/bootstrap-typeahead.js" }
-    %script{ :src => "/js/format_shortcut.js" }
-    %script{ :src => "/js/helpers.js" }
+    %script{ src: "/js/jquery-3.1.1.js" }
+    %script{ src: "/js/jquery-migrate-3.0.0.min.js" }
+    %script{ src: "/js/bootstrap-collapse.js" }
+    %script{ src: "/js/bootstrap-transition.js" }
+    %script{ src: "/js/bootstrap-alert.js" }
+    %script{ src: "/js/bootstrap-modal.js" }
+    %script{ src: "/js/bootstrap-dropdown.js" }
+    %script{ src: "/js/bootstrap-scrollspy.js" }
+    %script{ src: "/js/bootstrap-tab.js" }
+    %script{ src: "/js/bootstrap-tooltip.js" }
+    %script{ src: "/js/bootstrap-popover.js" }
+    %script{ src: "/js/bootstrap-button.js" }
+    %script{ src: "/js/bootstrap-carousel.js" }
+    %script{ src: "/js/bootstrap-typeahead.js" }
+    %script{ src: "/js/format_shortcut.js" }
+    %script{ src: "/js/helpers.js" }
 
-    %meta{ :charset => "utf-8" }/
+    %meta{ charset: "utf-8" }/
     %title Serpico
-    %meta{ :content => "", :name => "description" }/
-    %meta{ :content => "", :name => "author" }/
-    %link{ :href => "/css/bootstrap.css", :rel => "stylesheet" }/
-    %link{ :href => "/css/bootstrap-responsive.css", :rel => "stylesheet" }/
-    %link{ :href => "/css/font-awesome.css", :rel => "stylesheet" }/
+    %meta{ content: "", name: "description" }/
+    %meta{ content: "", name: "author" }/
+    %link{ href: "/css/bootstrap.css", rel: "stylesheet" }/
+    %link{ href: "/css/bootstrap-responsive.css", rel: "stylesheet" }/
+    %link{ href: "/css/font-awesome.css", rel: "stylesheet" }/
     :css
       body {
         padding-top: 60px;
@@ -52,16 +52,16 @@
         }
       }
 
-      %link{ :href => "/css/bootstrap-responsive.css", :rel => "stylesheet" }
+      %link{ href: "/css/bootstrap-responsive.css", rel: "stylesheet" }
   - if valid_session?
     %body
       .navbar.navbar-fixed-top
         .navbar-inner
           %ul.nav.padded
             %li
-              %a.fa.fa-file-word-o{ :href => "/reports/list" } &nbsp;List Reports
+              %a.fa.fa-file-word-o{ href: "/reports/list" } &nbsp;List Reports
             %li
-              %a.fa.fa-pencil-square-o{ :href => "/report/new" } &nbsp;New Report
+              %a.fa.fa-pencil-square-o{ href: "/report/new" } &nbsp;New Report
 
           %a.btn.btn-navbar.padded{ "data-toggle" => "collapse", "data-target" => ".nav-collapse" }
             %span.icon-bar
@@ -72,17 +72,17 @@
             %ul.nav.pull-right.padded
               - if is_administrator?
                 %li
-                  %a.fa.fa-sitemap{ :href => "/master/findings" } &nbsp;Findings Database
+                  %a.fa.fa-sitemap{ href: "/master/findings" } &nbsp;Findings Database
                 %li
-                  %a.fa.fa-reorder{ :href => "/admin/" } &nbsp;Administration
+                  %a.fa.fa-reorder{ href: "/admin/" } &nbsp;Administration
               %li
-                %a.fa.fa-tasks{ :href => "/info" } &nbsp;Consultant Information
+                %a.fa.fa-tasks{ href: "/info" } &nbsp;Consultant Information
               %li
-                %a.fa.fa-support{ :href => "/reset" } &nbsp;Change Password
+                %a.fa.fa-support{ href: "/reset" } &nbsp;Change Password
               %li
-                %a.fa.fa-external-link-square{ :href => "/logout" } &nbsp;Logout
+                %a.fa.fa-external-link-square{ href: "/logout" } &nbsp;Logout
 
-      <br>
+      %br
       .container-fluid
         - if @master
           %div.alert.alert-danger
@@ -97,40 +97,40 @@
               %ul.nav.nav-list
                 %li.nav-header Findings Menu
                 %li
-                  %a{ :href => "/master/findings" } List Current Findings
+                  %a{ href: "/master/findings" } List Current Findings
                 %li
-                  %a{ :href => "/master/findings/new" } Add Finding
+                  %a{ href: "/master/findings/new" } Add Finding
               %ul.nav.nav-list
                 %li.nav-header Database Functions
                 %li
-                  %a{ :href => "/master/export" } Export Current Findings
+                  %a{ href: "/master/export" } Export Current Findings
                 %li
-                  %a{ :href => "/master/import" } Import Findings
+                  %a{ href: "/master/import" } Import Findings
             - elsif @admin
               %ul.nav.nav-list
                 %li.nav-header Admin User Menu
                 %li
-                  %a{ :href => "/admin/add_user" } Add User
+                  %a{ href: "/admin/add_user" } Add User
                 %li
-                  %a{ :href => "/admin/list_user" } List Users
+                  %a{ href: "/admin/list_user" } List Users
                 %li.nav-header Admin Report Template Menu
                 %li
-                  %a{ :href => "/admin/templates/add" } Add Report Template
+                  %a{ href: "/admin/templates/add" } Add Report Template
                 %li
-                  %a{ :href => "/admin/templates" } List Report Templates
+                  %a{ href: "/admin/templates" } List Report Templates
                 %li
-                  %a{ :href => "/admin/udo_templates" } Manage UDOs templates for reports
+                  %a{ href: "/admin/udo_templates" } Manage UDOs templates for reports
                 %li.nav-header Plugin Menu
                 %li
-                  %a{ :href => "/admin/plugins" } Enable/Disable Plugins
+                  %a{ href: "/admin/plugins" } Enable/Disable Plugins
                 %li
-                  %a{ :href => "/admin/admin_plugins" } Administrator Specific Plugins
+                  %a{ href: "/admin/admin_plugins" } Administrator Specific Plugins
                 %li.nav-header Maintenance Menu
                 %li
-                  %a{ :href => "/admin/config" } Modify Configurations
+                  %a{ href: "/admin/config" } Modify Configurations
                 %li
-                  %a{ :href => "/admin/dbbackup" } Backup Master Database
-                  %a{ :href => "/admin/attacments_backup" } Backup All Attachments
+                  %a{ href: "/admin/dbbackup" } Backup Master Database
+                  %a{ href: "/admin/attacments_backup" } Backup All Attachments
                 - @version = File.open("VERSION.txt").read()
                 %li.nav-header Serpico Version: #{@version}
 
@@ -140,49 +140,49 @@
                   %li.nav-header
                     #{@report.report_name}
                   %li
-                    %a{ :href => "/report/#{@report.id}/edit" } Edit Report Information
+                    %a{ href: "/report/#{@report.id}/edit" } Edit Report Information
                   %li
-                    %a{ :href => "/report/#{@report.id}/generate" } Generate Report
+                    %a{ href: "/report/#{@report.id}/generate" } Generate Report
                     %li.nav-header Findings
                   %li
-                    %a{ :href => "/report/#{@report.id}/findings" } List Current Report Findings
+                    %a{ href: "/report/#{@report.id}/findings" } List Current Report Findings
                   %li
-                    %a{ :href => "/report/#{@report.id}/findings_add" } Add Finding from Templates
+                    %a{ href: "/report/#{@report.id}/findings_add" } Add Finding from Templates
                   %li
-                    %a{ :href => "/report/#{@report.id}/findings/new" } Create New Finding
+                    %a{ href: "/report/#{@report.id}/findings/new" } Create New Finding
                   %li
-                    %a{ :href => "/report/#{@report.id}/import_scan_data" } Import Findings from Scan Data **<em>Beta</em>**
+                    %a{ href: "/report/#{@report.id}/import_scan_data" } Import Findings from Scan Data **<em>Beta</em>**
                   %li.nav-header Attachments
                   %li
-                    %a{ :href => "/report/#{@report.id}/upload_attachments" } Upload New Attachment
+                    %a{ href: "/report/#{@report.id}/upload_attachments" } Upload New Attachment
                   %li
-                    %a{ :href => "/report/#{@report.id}/attachments" } List Attachments
+                    %a{ href: "/report/#{@report.id}/attachments" } List Attachments
                   %li.nav-header Metasploit Data Management
                   %li
-                    %a{ :href => "/report/#{@report.id}/hosts" } Hosts
+                    %a{ href: "/report/#{@report.id}/hosts" } Hosts
                   %li
-                    %a{ :href => "/report/#{@report.id}/vulns" } Vulnerabilities
+                    %a{ href: "/report/#{@report.id}/vulns" } Vulnerabilities
                   %li
-                    %a{ :href => "/report/#{@report.id}/services" } Services
+                    %a{ href: "/report/#{@report.id}/services" } Services
                   %li.nav-header Additional
                   %li
-                    %a{ :href => "/report/#{@report.id}/additional_features" } Additional Features
+                    %a{ href: "/report/#{@report.id}/additional_features" } Additional Features
               - if @plugin_side_menu
                 %ul.nav.nav-list
                   %li.nav-header Enabled Plugins
                   -@plugin_side_menu.each do |item|
                     %li
-                      %a{ :href => "#{item["link"]}?report_id=#{@report.id}" } #{item["name"]}
+                      %a{ href: "#{item["link"]}?report_id=#{@report.id}" } #{item["name"]}
 
           =yield
   - else
     %body
-    %link{ :href => "/css/signin.css", :rel => "stylesheet", :type => "text/css" }
+    %link{ href: "/css/signin.css", rel: "stylesheet", type: "text/css" }
     .container
-    %form.form-signin{ :action => "/login", :method => "POST", :role => "form" }
-      %img.text-center{ :src => "#{@logo}", :height => 150, :width =>  500 }
+    %form.form-signin{ action: "/login", method: "POST", role: "form" }
+      %img.text-center{ src: "#{@logo}", height: 150, width:  500 }
       %br
       %br
-      %input.form-control.btn-block{ :autofocus => "", :placeholder => "Username", :required => "", :type => "text", :name=> "username" }
-      %input.form-control.btn-block{ :placeholder => "Password", :required => "", :type => "password", :name=> "password", :autocomplete => "off" }
-      %button.btn.btn-signin.btn-block.form-control{ :type => "submit" } Sign in
+      %input.form-control.btn-block{ autofocus: "", placeholder: "Username", required: "", type: "text", name: "username" }
+      %input.form-control.btn-block{ placeholder: "Password", required: "", type: "password", name: "password", autocomplete: "off" }
+      %button.btn.btn-signin.btn-block.form-control{ type: "submit" } Sign in

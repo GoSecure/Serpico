@@ -1,45 +1,45 @@
-%link{:rel => "stylesheet", :href => "/codemirror/lib/codemirror.css"}
-%link{:rel => "stylesheet", :href => "/codemirror/theme/cobalt.css"}
-%link{:rel => "stylesheet", :href => "/codemirror/mode/Serpico/Serpico.css"}
-%link{:rel => "stylesheet", :href => "/codemirror/addon/fold/foldgutter.css"}
+%link{ rel: 'stylesheet', href: '/codemirror/lib/codemirror.css' }
+%link{ rel: 'stylesheet', href: '/codemirror/theme/cobalt.css' }
+%link{ rel: 'stylesheet', href: '/codemirror/mode/Serpico/Serpico.css' }
+%link{ rel: 'stylesheet', href: '/codemirror/addon/fold/foldgutter.css' }
 
-%script{:src => "/codemirror/lib/codemirror.js"}
-%script{:src => "/codemirror/mode/Serpico/Serpico.js"}
-%script{:src => "/codemirror/addon/fold/foldgutter.js"}
-%script{:src => "/codemirror/addon/fold/foldcode.js"}
-%script{:src => "/codemirror/addon/fold/indent-fold.js"}
+%script{ src: '/codemirror/lib/codemirror.js' }
+%script{ src: '/codemirror/mode/Serpico/Serpico.js' }
+%script{ src: '/codemirror/addon/fold/foldgutter.js' }
+%script{ src: '/codemirror/addon/fold/foldcode.js' }
+%script{ src: '/codemirror/addon/fold/indent-fold.js' }
 
-%div{:style => "margin-left: 15%;"}
+%div{ style: 'margin-left: 15%;' }
   %br
   %h3 Error in template
-  .table.table-striped{:id => "mytable"}
+  .table.table-striped{ id: 'mytable' }
     - errormessage = @error_message.split("\n")
-    %div #{errormessage[0]}
-    %div #{errormessage[1]}
-    %div #{errormessage[2]}
-    %div #{errormessage[3]}
+    %div %errormessage[0]
+    %div %errormessage[1]
+    %div %errormessage[2]
+    %div %errormessage[3]
 
     %h4 Meta Language tree
 
-    %label{ :class => "control-label", :for => "filter_panel" }
-      %a{:href=> '#filter_panel', "data-toggle"=>'modal', :class=>'btn btn-info'}
+    %label.control-label{ for: 'filter_panel' }
+      %a.btn.btn-info{ href: '#filter_panel', 'data-toggle' => 'modal' }
         Filter
-    .modal{:id=>'filter_panel', :class=>'modal hide fade', :tabindex=>'-1', :role=>'dialog', "aria-labelledby"=>'modal-label', "aria-hidden"=>'true'}
+    .modal.hide.fade{ id: 'filter_panel', tabindex: '-1', role: 'dialog', 'aria-labelledby' => 'modal-label', 'aria-hidden' => 'true' }
       .modal-body
         %h3 Filter
         Select the elements you want to display
         %br
-        %input{:type => "checkbox", :class => "filter", :name => "condition"} Condition
+        %input.filter{ type: 'checkbox', name: 'condition' } Condition
         %br
-        %input{:type => "checkbox", :class => "filter", :name => "loop"} Loop
+        %input.filter{ type: 'checkbox', name: 'loop' } Loop
         %br
-        %input{:type => "checkbox", :class => "filter", :name => "choose"} Choose structures
+        %input.filter{ type: 'checkbox', name: 'choose' } Choose structures
         %br
-        %input{:type => "checkbox", :class => "filter", :name => "rowloop"} Row loop
-        %br     
-        %input{:type => "checkbox", :class => "filter", :name => "variable"} Variable     
+        %input.filter{ type: 'checkbox', name: 'rowloop' } Row loop
+        %br
+        %input.filter{ type: 'checkbox', name: 'variable' } Variable
 
-    %textarea{:id => "tree"} #{@tree}
+    %textarea{ id: 'tree' } #{@tree}
 
     :javascript
       var myCodeMirror = CodeMirror.fromTextArea(document.querySelector("#tree"), {readOnly: true, theme: "cobalt Serpico", lineNumbers: true, foldGutter: true, extraKeys: {"Ctrl-Q": function(cm){ cm.foldCode(cm.getCursor()); }}, gutters: ["CodeMirror-linenumbers", "CodeMirror-foldgutter"]});
@@ -47,9 +47,9 @@
       var filters = document.querySelectorAll(".filter")
       for(var i = 0 ; i<filters.length; i++)
         filters[i].addEventListener("change",applyFilters)
-      
+
       function applyFilters(){
-          
+
           var cb = document.querySelectorAll(".filter")
           var filters = {}
           for(var i = 0 ; i<cb.length; i++){
@@ -70,13 +70,13 @@
               if(line[0] === "\u2206"){
                 indent--
                 for(j=0 ; j<indent ; j++)
-                  newtree += "\t" 
+                  newtree += "\t"
                 newtree += line+ "\n"
               }
               // start of loop (not choose)
               if(line[0] === "\u00AC" && line.indexOf("\u00B5") === -1){
                 for(j=0 ; j<indent ; j++)
-                  newtree += "\t" 
+                  newtree += "\t"
                 newtree += line+ "\n"
                 indent++
               }
@@ -85,7 +85,7 @@
               // start of condition
               if(line[0] === "\u2020"){
                 for(j=0 ; j<indent ; j++)
-                  newtree += "\t" 
+                  newtree += "\t"
                 newtree += line+ "\n"
                 indent++
               }
@@ -93,7 +93,7 @@
               if(line[0] === "\u00A5"){
                 indent--
                 for(j=0 ; j<indent ; j++)
-                  newtree += "\t" 
+                  newtree += "\t"
                 newtree += line+ "\n"
               }
             }
@@ -101,21 +101,21 @@
               // start of choose
               if(line.indexOf("\u00B5") !== -1){
                 for(j=0 ; j<indent ; j++)
-                  newtree += "\t" 
+                  newtree += "\t"
                 newtree += line+ "\n"
                 indent++
               }
               // elem of choose
               if(line[0] === "\u0192" || line[0] === "\u00F7"){
                 for(j=0 ; j<indent ; j++)
-                  newtree += "\t" 
+                  newtree += "\t"
                 newtree += line+ "\n"
               }
               // end of choose
               if(line[0] === "\u2260" || line[0] === "\u00E5"){
                 indent--
                 for(j=0 ; j<indent ; j++)
-                  newtree += "\t" 
+                  newtree += "\t"
                 newtree += line+ "\n"
               }
             }
@@ -129,7 +129,7 @@
 
               if(line[0] === "\u00E6"){
                 for(j=0 ; j<indent ; j++)
-                  newtree += "\t" 
+                  newtree += "\t"
                 newtree += line+ "\n"
                 indent++
                 rowloopStarted = true
@@ -137,7 +137,7 @@
               }
               if(line[0] === "\u221E"){
                 for(j=0 ; j<indent ; j++)
-                  newtree += "\t" 
+                  newtree += "\t"
                 newtree += line+ "\n"
               }
 
@@ -145,7 +145,7 @@
             if(filters['variable']){
               if(line[0] === "\u03A9" || line[0] === "\u00A7" || line[0] === "\u03C0"){
                 for(j=0 ; j<indent ; j++)
-                  newtree += "\t" 
+                  newtree += "\t"
                 newtree += line+ "\n"
               }
             }

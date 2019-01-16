@@ -1,54 +1,54 @@
 .span9.indent3
   %br
     .table.table-striped#mytable
-      %table{ :style => "width: 80%" }
+      %table{ style: "width: 80%" }
         %tbody
           - if @reports.size > 0
-            %input.form-control#search{ :type => "text", :placeholder => "Report Name Search" }
+            %input.form-control#search{ type: "text", placeholder: "Report Name Search" }
             %style#search_style
             %span.input-group-btn
             %br
             %br
-            %a.btn.btn-danger#deletemultiple{ :href => "/report/remove/" }
+            %a.btn.btn-danger#deletemultiple{ href: "/report/remove/" }
               Delete selected
             %br
             %br
             %trd
               %th
-                %input.checkbox#checkall{ :type => "checkbox" }
-              %th{ :style => "width: 60%" }
+                %input.checkbox#checkall{ type: "checkbox" }
+              %th{ style: "width: 60%" }
                 Report Name
-              %th{ :style => "width: 10%" }
+              %th{ style: "width: 10%" }
                 Customer
-              %th{ :style => "width: 10%" }
+              %th{ style: "width: 10%" }
                 Owner
-              %th{ :style => "width: 20%" }
+              %th{ style: "width: 20%" }
                 &nbsp;&nbsp;&nbsp;&nbsp;&nbsp;&nbsp;Actions
             - @reports.each do |report|
               %tr
                 %td.searchable{ :"data-index" => "#{report.report_name.downcase}" }
-                  %input.checkbox{ :type => "checkbox", :name => "#{report.id}" }
-                %td.searchable{ :style => "width: 70%", :"data-index" => "#{report.report_name.downcase}" }
+                  %input.checkbox{ type: "checkbox", name: "#{report.id}" }
+                %td.searchable{ style: "width: 70%", :"data-index" => "#{report.report_name.downcase}" }
                   #{report.report_name}
-                %td.searchable{ :style => "width: 10%", :"data-index" => "#{report.report_name.downcase}" }
+                %td.searchable{ style: "width: 10%", :"data-index" => "#{report.report_name.downcase}" }
                   #{report.full_company_name}
-                %td.searchable{ :style => "width: 10%", :"data-index" => "#{report.report_name.downcase}" }
+                %td.searchable{ style: "width: 10%", :"data-index" => "#{report.report_name.downcase}" }
                   #{report.owner}
-                %td.searchable{ :style => "width: 20%", :"data-index" => "#{report.report_name.downcase}" }
+                %td.searchable{ style: "width: 20%", :"data-index" => "#{report.report_name.downcase}" }
                   - if @master
-                    %a.btn.btn-warning{ :href => "/master/reports/#{finding.id}" }
-                      %i.icon-pencil.icon-white{ :title => "Edit" }
-                    %a.btn.btn-info{ :href => "/master/reports/#{report.id}/generate" }
-                      %i.icon-play-circle.icon-white{ :title => "Preview" }
+                    %a.btn.btn-warning{ href: "/master/reports/#{finding.id}" }
+                      %i.icon-pencil.icon-white{ title: "Edit" }
+                    %a.btn.btn-info{ href: "/master/reports/#{report.id}/generate" }
+                      %i.icon-play-circle.icon-white{ title: "Preview" }
                   - else
-                    %a.btn.btn-warning{ :href => "/report/#{report.id}/edit" }
-                      %i.icon-pencil.icon-white{ :title => "Edit" }
-                    %a.btn.btn-info{ :href => "/report/#{report.id}/generate" }
-                      %i.icon-play-circle.icon-white{ :title => "Preview" }
-                    %a.btn.btn-danger{ :href => "/report/remove/#{report.id}" }
-                      %i.icon-trash.icon-white{ :title => "Delete" }
-                    %a.btn.btn-inverse{ :href => "/admin/add_user/#{report.id}" }
-                      %i.icon-user.icon-white{ :title => "Add Author" }
+                    %a.btn.btn-warning{ href: "/report/#{report.id}/edit" }
+                      %i.icon-pencil.icon-white{ title: "Edit" }
+                    %a.btn.btn-info{ href: "/report/#{report.id}/generate" }
+                      %i.icon-play-circle.icon-white{ title: "Preview" }
+                    %a.btn.btn-danger{ href: "/report/remove/#{report.id}" }
+                      %i.icon-trash.icon-white{ title: "Delete" }
+                    %a.btn.btn-inverse{ href: "/admin/add_user/#{report.id}" }
+                      %i.icon-user.icon-white{ title: "Add Author" }
 
           - else
             %h4

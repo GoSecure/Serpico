@@ -7,7 +7,7 @@
     %br
     %br
     .table.table-hover
-      %table{ :style => "width: 90%" }
+      %table{ style: "width: 90%" }
         %thead
           %tr
             %td
@@ -24,13 +24,13 @@
           - if @services
             - @services.each do |service|
               %tr
-                %td.searchable{ :style => "width: 15%", :"data-index" => "#{service["host"]}" }
+                %td.searchable{ style: "width: 15%", :"data-index" => "#{service["host"]}" }
                   #{service["host"]}
-                %td.searchable{ :style => "width: 15%", :"data-index" => "#{service["port"]}" }
+                %td.searchable{ style: "width: 15%", :"data-index" => "#{service["port"]}" }
                   #{service["port"]}
-                %td.searchable{ :style => "width: 15%", :"data-index" => "#{service["proto"]}" }
+                %td.searchable{ style: "width: 15%", :"data-index" => "#{service["proto"]}" }
                   #{service["name"]}
-                %td.searchable{ :style => "width: 15%", :"data-index" => "#{service["state"]}" }
+                %td.searchable{ style: "width: 15%", :"data-index" => "#{service["state"]}" }
                   #{service["state"]}
-                %td.searchable{ :style => "width: 40%", :"data-index" => "#{service["info"]}" }
+                %td.searchable{ style: "width: 40%", :"data-index" => "#{service["info"]}" }
                   #{service["info"]}

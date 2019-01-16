@@ -1,17 +1,17 @@
 .span10
-  %form{ :method => "post", :enctype => "multipart/form-data" }
+  %form{ method: "post", enctype: "multipart/form-data" }
     %br
     %h2 Upload Attachment
     %br
     .control-group
-      %label{ :class => "control-label", :for => "overview" }
-        %a{ :href=> '#modaloverview', "data-toggle"=>'modal', :class=>'btn btn-info' }
+      %label{ class: "control-label", for: "overview" }
+        %a{ href: '#modaloverview', "data-toggle"=>'modal', class:'btn btn-info' }
           Uploading Attachment Help
-      .modal{:id=>'modaloverview', :class=>'modal hide fade', :tabindex=>'-1', :role=>'dialog', "aria-labelledby"=>'modal-label', "aria-hidden"=>'true'}
+      .modal{id:'modaloverview', class:'modal hide fade', tabindex:'-1', role:'dialog', "aria-labelledby"=>'modal-label', "aria-hidden"=>'true'}
         .modal-header
-          %button{ :type=>'button', :class=>'close', "data-dismiss"=>"modal", "aria-hidden"=>"true"}
+          %button{ type:'button', class:'close', "data-dismiss"=>"modal", "aria-hidden"=>"true"}
             x
-          %h3{ :id=>"modal-label" }
+          %h3{ id:"modal-label" }
             Attachments
         .modal-body
           %p &bullet;&nbsp;Only jpg and png are supported for screenshots
@@ -24,7 +24,7 @@
             %b For now, only XML can be added as an appendice
           %p
             For exemple, if you upload a file <b>"recon.xml"</b>, which has a structure like the following :
-          %div{:style => "background-color:#F2F3F4"}
+          %div{style: "background-color:#F2F3F4"}
             %p
               &lt;host&gt;
             %p
@@ -43,7 +43,7 @@
               &lt;/host&gt;
           %p
             then you could call this data in your document template by doing, for exemple :
-          %div{:style => "background-color:#F2F3F4"}
+          %div{style: "background-color:#F2F3F4"}
             %p
               ¬report/appendices/&lt;&lt;name_of_your_file_without_extension&gt;&gt;/host¬
             %p
@@ -64,16 +64,16 @@
         %td
           Upload Files &nbsp;
         %td
-          %input#files{ :type => "file", :name => "files[]", :multiple => true }
+          %input#files{ type: "file", name: "files[]", multiple: true }
       %tr
         %td
           Appendice
         %td
-          %input{ :type => 'hidden', :name => 'appendice', :value => "0"}
-          %input{ :type => 'checkbox', :name => 'appendice', :value => "1"}
+          %input{ type: 'hidden', name: 'appendice', value: "0"}
+          %input{ type: 'checkbox', name: 'appendice', value: "1"}
 
     %br
     %br
-    %input.btn.btn-default{ :type => "submit", :value => "Upload" }
-    %a.btn.btn-default{ :href => "/report/#{@report.id}/edit" }
+    %input.btn.btn-default{ type: "submit", value: "Upload" }
+    %a.btn.btn-default{ href: "/report/#{@report.id}/edit" }
       Cancel
