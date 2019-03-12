@@ -8,8 +8,7 @@
   .form-group.row
     %label.col-lg-2.col-form-label{ :for => "title" } Title
     .col-lg-4
-      %input.form-control{ :type => "text", :name => "title", :value => 
-"#{CGI.unescapeHTML(@finding.title)}" }
+      %input.form-control{ :type => "text", :name => "title", :value => "#{CGI.unescapeHTML(@finding.title)}" }
   -if !@master
     - if @states
       .form-group.row
@@ -62,10 +61,8 @@
                     %td
                       #{vuln.msf_ref}
                     %td{ :align => "right" }
-                      %a.btn.btn-danger.btn-sm{ :href => 
-"/mapping/#{@finding.id}/vulnmap/#{vuln.id}/delete" }
-                        %i.far.fa-trash-alt.icon-sm{ :value => "#{vuln.msf_ref}", :type => "submit", :title 
-=> "Delete" }
+                      %a.btn.btn-danger.btn-sm{ :href => "/mapping/#{@finding.id}/vulnmap/#{vuln.id}/delete" }
+                        %i.far.fa-trash-alt.icon-sm{ :value => "#{vuln.msf_ref}", :type => "submit", :title => "Delete" }
       .form-group.row
         %label.col-lg-2.col-form-label{ :for => "msf_ref" }
           %a.btn.btn-info{ :href => "#mymodal", "data-toggle" => "modal" }
@@ -82,14 +79,10 @@
                 %p
                   The references field in Metasploits database contains various types of reference codes.
                 %p
-                  When importing vulnerabilities from Metasploit, Serpico will split these reference codes 
-by comma. Whatever is placed in the Vuln ID mapping field will be checked for a string comparison upon 
-import. This allows Serpico to support any type of vendor/tool that Metasploit supports.
+                  When importing vulnerabilities from Metasploit, Serpico will split these reference codes by comma. Whatever is placed in the Vuln ID mapping field will be checked for a string comparison upon import. This allows Serpico to support any type of vendor/tool that Metasploit supports.
                 %h4 Big fat Warning
                 %p.text-error
-                  Metasploit doesn't do the best job at parsing these reference codes. Use CVEs over vendor 
-specific IDs whenever possible. Burp is not support via this method. Instead, use the legacy Burp XML 
-importer.
+                  Metasploit doesn't do the best job at parsing these reference codes. Use CVEs over vendor specific IDs whenever possible. Burp is not support via this method. Instead, use the legacy Burp XML importer.
                 %br
                   %h4 Supported reference codes:
                   .table
@@ -126,10 +119,8 @@ importer.
                     %td
                       #{item.pluginid}
                     %td{ :align => "right" }
-                      %a.btn.btn-danger.btn-xs{ :href => 
-"/mapping/#{@finding.id}/nessus/#{item.pluginid}/delete" }
-                        %i.far.fa-trash-alt{ :value => "#{item.pluginid}", :type => "submit", :title => 
-"Delete" }
+                      %a.btn.btn-danger.btn-xs{ :href => "/mapping/#{@finding.id}/nessus/#{item.pluginid}/delete" }
+                        %i.far.fa-trash-alt{ :value => "#{item.pluginid}", :type => "submit", :title => "Delete" }
       .form-group.row
         %label.col-lg-2.col-form-label{ :for => "nessus_pluginid" } Add new nessus ID mapping
         .col-lg-4
@@ -147,10 +138,8 @@ importer.
                     %td
                       #{item.pluginid}
                     %td{ :align => "right" }
-                      %a.btn.btn-danger.btn-xs{ :href => 
-"/mapping/#{@finding.id}/burp/#{item.pluginid}/delete" }
-                        %i.far.fa-trash-alt{ :value => "#{item.pluginid}", :type => "submit", :title => 
-"Delete" }
+                      %a.btn.btn-danger.btn-xs{ :href => "/mapping/#{@finding.id}/burp/#{item.pluginid}/delete" }
+                        %i.far.fa-trash-alt{ :value => "#{item.pluginid}", :type => "submit", :title => "Delete" }
       .form-group.row
         %label.col-lg-2.col-form-label{ :for => "burp_pluginid" }
           %a{ :href => "#burpmodal", "data-toggle" => "modal" }
@@ -167,8 +156,7 @@ importer.
                 You can use the following link to help map burp's ids to your findings:
                 %br
                 %br
-                %a{ :href => "http://portswigger.net/burp/help/scanner_issuetypes.html", :target => 
-"_blank" } http://portswigger.net/burp/help/scanner_issuetypes.html
+                %a{ :href => "http://portswigger.net/burp/help/scanner_issuetypes.html", :target => "_blank" } http://portswigger.net/burp/help/scanner_issuetypes.html
                 %br
         .col-lg-4
           %input.form-control{ :type => "text", :name => "burp_pluginid" }
@@ -176,28 +164,23 @@ importer.
     .form-group.row
       %label.col-lg-2.col-form-label{ :for => "damage" } Damage
       .col-lg-4
-        %input.form-control{ :type => "number", :min => "1", :max => "10", :name => "damage", :value => 
-"#{@finding.damage}", :required => true }
+        %input.form-control{ :type => "number", :min => "1", :max => "10", :name => "damage", :value => "#{@finding.damage}", :required => true }
     .form-group.row
       %label.col-lg-2.col-form-label{ :for => "reproducability" } Reproducibility
       .col-lg-4
-        %input.form-control{ :type => "number", :min => "1", :max => "10", :name => "reproducability", 
-:value => "#{@finding.reproducability}", :required => true }
+        %input.form-control{ :type => "number", :min => "1", :max => "10", :name => "reproducability", :value => "#{@finding.reproducability}", :required => true }
     .form-group.row
       %label.col-lg-2.col-form-label{ :for => "exploitability" } Exploitability
       .col-lg-4
-        %input.form-control{ :type => "number", :min => "1", :max => "10", :name => "exploitability", 
-:value => "#{@finding.exploitability}", :required => true }
+        %input.form-control{ :type => "number", :min => "1", :max => "10", :name => "exploitability", :value => "#{@finding.exploitability}", :required => true }
     .form-group.row
       %label.col-lg-2.col-form-label{ :for => "affected_users" } Affected Users
       .col-lg-4
-        %input.form-control{ :type => "number", :min => "1", :max => "10", :name => "affected_users", 
-:value => "#{@finding.affected_users}", :required => true }
+        %input.form-control{ :type => "number", :min => "1", :max => "10", :name => "affected_users", :value => "#{@finding.affected_users}", :required => true }
     .form-group.row
       %label.col-lg-2.col-form-label{ :for => "discoverability" } Discoverability
       .col-lg-4
-        %input.form-control{ :type => "number", :min => "1", :max => "10", :name => "discoverability", 
-:value => "#{@finding.discoverability}", :required => true }
+        %input.form-control{ :type => "number", :min => "1", :max => "10", :name => "discoverability", :value => "#{@finding.discoverability}", :required => true }
   - elsif @cvss
     .form-group.row
       %label.col-lg-2.col-form-label{ :for => "attack_vector" }
@@ -217,8 +200,7 @@ importer.
               %script{ :src => "/js/cvss.js" }
               %div#cvssboard
       .col-lg-4
-        %input#vs.form-control{ :type => "text", :placeholder => "CVSS Vector String", :style => 
-"width:35em" }
+        %input#vs.form-control{ :type => "text", :placeholder => "CVSS Vector String", :style => "width:35em" }
     %span.input-group-btn
     .form-group.row.cvss2
       %label.col-lg-2.col-form-label{ :for => "baseScore" } Base Score
@@ -432,8 +414,7 @@ importer.
     .form-group.row.cvss3
       %label.col-lg-2.col-form-label{ :for => "privileges_required" } Privileges Required
       .col-lg-4
-        %select#privileges_required.custom-select{ :name => "privileges_required", "data-cvss-tag" => "PR" 
-}
+        %select#privileges_required.custom-select{ :name => "privileges_required", "data-cvss-tag" => "PR" }
           - settings.privileges_required.each do |privileges_required|
             - if privileges_required == @finding.privileges_required
               %option{ :selected => "selected" } #{privileges_required}
@@ -514,8 +495,7 @@ importer.
     .form-group.row.cvss3
       %label.col-lg-2.col-form-label{ :for => "confidentiality_requirement" } Confidentiality Requirement
       .col-lg-4
-        %select#confidentiality_requirement.custom-select{ :name => "confidentiality_requirement", 
-"data-cvss-tag" => "CR" }
+        %select#confidentiality_requirement.custom-select{ :name => "confidentiality_requirement", "data-cvss-tag" => "CR" }
           - settings.confidentiality_requirement.each do |confidentiality_requirement|
             - if confidentiality_requirement == @finding.confidentiality_requirement
               %option{ :selected => "selected" } #{confidentiality_requirement}
@@ -524,8 +504,7 @@ importer.
     .form-group.row.cvss3
       %label.col-lg-2.col-form-label{ :for => "integrity_requirement" } Integrity Requirement
       .col-lg-4
-        %select#integrity_requirement.custom-select{ :name => "integrity_requirement", "data-cvss-tag" => 
-"IR" }
+        %select#integrity_requirement.custom-select{ :name => "integrity_requirement", "data-cvss-tag" => "IR" }
           - settings.integrity_requirement.each do |integrity_requirement|
             - if integrity_requirement == @finding.integrity_requirement
               %option{ :selected => "selected" } #{integrity_requirement}
@@ -534,8 +513,7 @@ importer.
     .form-group.row.cvss3
       %label.col-lg-2.col-form-label{ :for => "availability_requirement" } Availability Requirement
       .col-lg-4
-        %select#availability_requirement.custom-select{ :name => "availability_requirement", 
-"data-cvss-tag" => "AR" }
+        %select#availability_requirement.custom-select{ :name => "availability_requirement", "data-cvss-tag" => "AR" }
           - settings.availability_requirement.each do |availability_requirement|
             - if availability_requirement == @finding.availability_requirement
               %option{ :selected => "selected" } #{availability_requirement}
@@ -553,8 +531,7 @@ importer.
     .form-group.row.cvss3
       %label.col-lg-2.col-form-label{ :for => "mod_attack_complexity" } Modified Attack Complexity
       .col-lg-4
-        %select#mod_attack_complexity.custom-select{ :name => "mod_attack_complexity", "data-cvss-tag" => 
-"MAC" }
+        %select#mod_attack_complexity.custom-select{ :name => "mod_attack_complexity", "data-cvss-tag" => "MAC" }
           - settings.mod_attack_complexity.each do |mod_attack_complexity|
             - if mod_attack_complexity == @finding.mod_attack_complexity
               %option{ :selected => "selected" } #{mod_attack_complexity}
@@ -563,8 +540,7 @@ importer.
     .form-group.row.cvss3
       %label.col-lg-2.col-form-label{ :for => "mod_privileges_required" } Modified Privileges Required
       .col-lg-4
-        %select#mod_privileges_required.custom-select{ :name => "mod_privileges_required", "data-cvss-tag" 
-=> "MPR" }
+        %select#mod_privileges_required.custom-select{ :name => "mod_privileges_required", "data-cvss-tag" => "MPR" }
           - settings.mod_privileges_required.each do |mod_privileges_required|
             - if mod_privileges_required == @finding.mod_privileges_required
               %option{ :selected => "selected" } #{mod_privileges_required}
@@ -573,8 +549,7 @@ importer.
     .form-group.row.cvss3
       %label.col-lg-2.col-form-label{ :for => "mod_user_interaction" } Modified User Interaction
       .col-lg-4
-        %select#mod_user_interaction.custom-select{ :name => "mod_user_interaction", "data-cvss-tag" => 
-"MUI" }
+        %select#mod_user_interaction.custom-select{ :name => "mod_user_interaction", "data-cvss-tag" => "MUI" }
           - settings.mod_user_interaction.each do |mod_user_interaction|
             - if mod_user_interaction == @finding.mod_user_interaction
               %option{ :selected => "selected" } #{mod_user_interaction}
@@ -592,8 +567,7 @@ importer.
     .form-group.row.cvss3
       %label.col-lg-2.col-form-label{ :for => "mod_confidentiality" } Modified Confidentiality
       .col-lg-4
-        %select#mod_confidentiality.custom-select{ :name => "mod_confidentiality", "data-cvss-tag" => "MC" 
-}
+        %select#mod_confidentiality.custom-select{ :name => "mod_confidentiality", "data-cvss-tag" => "MC" }
           - settings.mod_confidentiality.each do |mod_confidentiality|
             - if mod_confidentiality == @finding.mod_confidentiality
               %option{ :selected => "selected" } #{mod_confidentiality}
@@ -643,8 +617,7 @@ importer.
     .form-group.row
       %label.col-lg-2.col-form-label{ :for => "severity_rationale" } Severity Rationale
       .col-lg-4
-        %textarea#severity_rationale.input-xxlarge.allowMarkupShortcut.form-control{ :rows => "3", :name => 
-"severity_rationale" }
+        %textarea#severity_rationale.input-xxlarge.allowMarkupShortcut.form-control{ :rows => "3", :name => "severity_rationale" }
           - if @finding
             - if @finding.severity_rationale
               #{meta_markup(@finding.severity_rationale)}
@@ -660,8 +633,7 @@ importer.
     .form-group.row
       %label.col-lg-2.col-form-label{ :for => "likelihood_rationale" } Likelihood Rationale
       .col-lg-4
-        %textarea#likelihood_rationale.input-xxlarge.allowMarkupShortcut.form-control{ :rows => "3", :name 
-=> "likelihood_rationale" }
+        %textarea#likelihood_rationale.input-xxlarge.allowMarkupShortcut.form-control{ :rows => "3", :name => "likelihood_rationale" }
           - if @finding
             - if @finding.likelihood_rationale
               #{meta_markup(@finding.likelihood_rationale)}
@@ -740,24 +712,20 @@ importer.
               &times;
           .modal-body
             %p
-              There are markup sets you can use in any field. This text is converted inside of Microsoft 
-Word.
+              There are markup sets you can use in any field. This text is converted inside of Microsoft Word.
               %p.text-error
                 YOU MUST CLOSE ALL TAGS. OTHERWISE YOU CAN DESTROY ALL TEXT FORMATTING. SEE EXAMPLES BELOW.
               %b
-                Review the finding "TEST - Markup Tester" for a clear example. As always, press preview to 
-see the finding in Word.
+                Review the finding "TEST - Markup Tester" for a clear example. As always, press preview to see the finding in Word.
             %h2
               {{ URL }}
             %p
-              If you place {{ URL }} in any field the text will be hyperlinked, otherwise hyperlinking is 
-ignored.
+              If you place {{ URL }} in any field the text will be hyperlinked, otherwise hyperlinking is ignored.
               %br
             %h2
               &lt;&lt;full_company_name&gt;&gt;
             %p
-              If you place &lt;&lt;full_company_name&gt;&gt; in a finding the customer name will be 
-substituted in the finding. This is particularly helpful in the Templated Findings.
+              If you place &lt;&lt;full_company_name&gt;&gt; in a finding the customer name will be substituted in the finding. This is particularly helpful in the Templated Findings.
               %br
               %br
               %code
@@ -810,8 +778,7 @@ substituted in the finding. This is particularly helpful in the Templated Findin
               %code
                 [[[ code, code goes here ]]]
     .col-lg-4
-      %textarea#overview.input-xxlarge.allowMarkupShortcut.form-control{ :rows => "10", :name => "overview" 
-}
+      %textarea#overview.input-xxlarge.allowMarkupShortcut.form-control{ :rows => "10", :name => "overview" }
         - if @finding
           - if @finding.overview
             #{meta_markup(@finding.overview)}
@@ -826,24 +793,21 @@ substituted in the finding. This is particularly helpful in the Templated Findin
     .form-group.row
       %label.col-lg-2.col-form-label{ :for => "affected_hosts" } Affected Hosts/URLs
       .col-lg-4
-        %textarea#affected_hosts.input-xxlarge.allowMarkupShortcut.form-control{ :rows => "3", :name => 
-"affected_hosts" }
+        %textarea#affected_hosts.input-xxlarge.allowMarkupShortcut.form-control{ :rows => "3", :name => "affected_hosts" }
           - if @finding
             - if @finding.affected_hosts
               #{meta_markup(@finding.affected_hosts)}
   .form-group.row
     %label.col-lg-2.col-form-label{ :for => "remediation" } Remediation
     .col-lg-4
-      %textarea#remediation.input-xxlarge.allowMarkupShortcut.form-control{ :rows => "10", :name => 
-"remediation" }
+      %textarea#remediation.input-xxlarge.allowMarkupShortcut.form-control{ :rows => "10", :name => "remediation" }
         - if @finding
           - if @finding.remediation
             #{meta_markup(@finding.remediation)}
   .form-group.row
     %label.col-lg-2.col-form-label{ :for => "references" } References (One Per Line)
     .col-lg-4
-      %textarea#references.input-xxlarge.allowMarkupShortcut.form-control{ :rows => "5", :name => 
-"references" }
+      %textarea#references.input-xxlarge.allowMarkupShortcut.form-control{ :rows => "5", :name => "references" }
         - if @finding
           - if @finding.references
             #{meta_markup(@finding.references)}
@@ -867,16 +831,14 @@ substituted in the finding. This is particularly helpful in the Templated Findin
       #info_1.info.collapse.out.col-4
         %label{ :for => "presentation_points" }
           Presentation Points (One Per Line)
-        %textarea#presentation_points.input-xxlarge.allowMarkupShortcut.form-control{ :rows => "10", :name 
-=> "presentation_points" }
+        %textarea#presentation_points.input-xxlarge.allowMarkupShortcut.form-control{ :rows => "10", :name => "presentation_points" }
           - if @finding
             - if @finding.presentation_points
               #{meta_markup(@finding.presentation_points)}
         %br
         %label{ :for => "presentation_rem_points" }
           Presentation Remediation Points (One Per Line)
-        %textarea#presentation_rem_points.input-xxlarge.allowMarkupShortcut.form-control{ :rows => "10", 
-:name => "presentation_rem_points" }
+        %textarea#presentation_rem_points.input-xxlarge.allowMarkupShortcut.form-control{ :rows => "10", :name => "presentation_rem_points" }
           - if @finding
             - if @finding.presentation_rem_points
               #{meta_markup(@finding.presentation_rem_points)}
@@ -967,8 +929,7 @@ substituted in the finding. This is particularly helpful in the Templated Findin
       $("#temporalScore .results .severity").attr("class", "severity " + output.temporalSeverity);
       $("#environmentalScore .results .score").text(output.environmentalMetricScore);
       $("#environmentalScore .results .severity").text(output.environmentalSeverity);
-      $("#environmentalScore .results .severity").attr("class", "severity " + 
-output.environmentalSeverity);
+      $("#environmentalScore .results .severity").attr("class", "severity " + output.environmentalSeverity);
 
       if (updateCVSSJS) {
         cvssjs.set(vectorString);
@@ -1020,4 +981,3 @@ output.environmentalSeverity);
         updateCVSSSummary(true, false);
       });
     });
-
