@@ -20,6 +20,7 @@ class Server < Sinatra::Application
   unless Config['findings_assessment_types']
     Config['findings_assessment_types'] = ['External', 'Internal', 'Internal/External', 'Wireless', 'Web Application', 'DoS']
   end
+
   set :assessment_types, Config['findings_assessment_types']
 
   set :status, ['EXPLOITED']

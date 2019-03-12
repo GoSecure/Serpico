@@ -27,8 +27,13 @@ end
 # Create a report
 get '/report/new' do
   @templates = Xslt.all
+
   @assessment_types = Config['report_assessment_types']
   @languages = Config['languages']
+
+  @admin = true if is_administrator?
+  @plugin = true if is_plugin?
+
   haml :new_report
 end
 
@@ -570,6 +575,7 @@ get '/report/:id/udo/:udo_id/edit' do
   @udo_template = UserDefinedObjectTemplates.get(@udo_to_edit.template_id)
   @udo_template_properties = JSON.parse(@udo_template.udo_properties)
   @udo_to_edit_properties = JSON.parse(@udo_to_edit.udo_properties)
+
   haml :user_defined_object_edit
 end
 
@@ -911,7 +917,7 @@ get '/report/:id/findings/new' do
 
   @findings, @dread, @cvss, @cvssv3, @risk, @riskmatrix,@nist800 = get_scoring_findings(@report)
 
-  haml :findings_edit
+  haml :create_finding
 end
 
 # Create the finding in the DB
