@@ -33,7 +33,7 @@ get '/master/findings/new' do
   @burpmap = Config['burpmap']
   @vulnmap = Config['vulnmap']
 
-  haml :findings_edit
+  haml :create_finding
 end
 
 # Create the finding in the DB
