@@ -1,6 +1,9 @@
 %link{ :href => "/css/bootstrap-suggest.css", :rel => "stylesheet" }/
 %script{ :src => "/js/bootstrap-suggest.min.js" }
 
+%link{ :href => "/css/simplemde.min.css", :rel => "stylesheet" }/
+%script{ :src => "/js/simplemde.min.js" }
+
 .d-flex.justify-content-between.flex-wrap.flex-md-nowrap.align-items-center.pt-3.pb-2.mb-3.border-bottom
   %h1.h2 New Finding
 
@@ -744,3 +747,91 @@
         updateCVSSSummary(true, false);
       });
     });
+
+:css
+  .editor-toolbar.fullscreen,
+  .CodeMirror-fullscreen,
+  .editor-preview-side.editor-preview-active-side {
+    z-index: 1050;
+  }
+
+:javascript
+  $(document).ready(function() {
+    $("textarea").each(function (index, textarea) {
+        var newMDE = new SimpleMDE({
+          element: textarea,
+          toolbar: [
+            {
+              name: "bold",
+              action: SimpleMDE.toggleBold,
+              className: "fas fa-bold",
+              title: "Bold"
+            },
+            {
+              name: "italic",
+              action: SimpleMDE.toggleItalic,
+              className: "fas fa-italic",
+              title: "Italic"
+            },
+            {
+              name: "heading",
+              action: SimpleMDE.toggleHeading1,
+              className: "fas fa-heading",
+              title: "Heading"
+            },
+            "|",
+            {
+              name: "code",
+              action: SimpleMDE.toggleCodeBlock,
+              className: "fas fa-code",
+              title: "Code"
+            },
+            {
+              name: "unordered-list",
+              action: SimpleMDE.toggleUnorderedList,
+              className: "fas fa-list-ul",
+              title: "Generic List"
+            },
+            {
+              name: "link",
+              action: SimpleMDE.drawLink,
+              className: "fas fa-link",
+              title: "Create Link"
+            },
+            "|",
+            {
+              name: "image",
+              action: SimpleMDE.drawImage,
+              className: "fas fa-image",
+              title: "Insert Image"
+            },
+            "|",
+            {
+              name: "fullscreen",
+              action: SimpleMDE.toggleFullScreen,
+              className: "fas fa-expand-arrows-alt",
+              title: "Toggle Fullscreen"
+            },
+            {
+              name: "side-by-side",
+              action: SimpleMDE.toggleSideBySide,
+              className: "fas fa-columns",
+              title: "Toggle Side by Side"
+            }
+          ],
+          autoDownloadFontAwesome: false,
+          spellChecker: false,
+          parsingConfig: {
+            strikethrough: false
+          },
+          shortcuts: {
+            "toggleBlockquote": null,
+            "drawLink": null,
+            "togglePreview": null,
+            "drawTable": null,
+            "drawImage": null,
+            "toggleHeadingBigger": null
+          }
+        });
+    });
+  });

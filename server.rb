@@ -21,9 +21,14 @@ class Server < Sinatra::Application
   end
   set :assessment_types, config_options['findings_assessment_types']
   set :finding_states, config_options['finding_states']
- 
+
   set :status, ['EXPLOITED']
   set :show_exceptions, config_options['show_exceptions']
+
+  unless config_options['markup_language']
+    config_options['markup_language'] = 'serpico'
+  end
+  set :markup_language, config_options['markup_language']
 
   if config_options['effort']
     set :effort, config_options['effort']

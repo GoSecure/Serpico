@@ -221,46 +221,58 @@ end
 
 # The helper class exists to do string manipulation and heavy lifting
 def url_escape_hash(hash)
+
   hash.each do |k, v|
     v ||= ''
     v = CGI.escapeHTML(v)
 
     if v
-      # convert bullets
-      v = v.gsub('*-', '<bullet>')
-      v = v.gsub('-*', '</bullet>')
+      # If we are setup to use markdown
+      if settings and settings.markup_language == 'markdown'
+        require 'kramdown'
+        require './helpers/serpico_markdown_converter'
 
-      # convert first nested bullets
-      v = v.gsub('*=', '<bullet1>')
-      v = v.gsub('=*', '</bullet1>')
+        document = Kramdown::Document.new(v, :auto_ids => false)
+        v = document.to_SerpicoMarkdownHTML
+      else
+        # Default to Serpico markup
 
-      # convert h4
-      v = v.gsub('[==', '<h4>')
-      v = v.gsub('==]', '</h4>')
+        # convert bullets
+        v = v.gsub('*-', '<bullet>')
+        v = v.gsub('-*', '</bullet>')
 
-      # convert indent text
-      v = v.gsub('[--', '<indented>')
-      v = v.gsub('--]', '</indented>')
+        # convert first nested bullets
+        v = v.gsub('*=', '<bullet1>')
+        v = v.gsub('=*', '</bullet1>')
 
-      # convert indent text
-      v = v.gsub('[~~', '<italics>')
-      v = v.gsub('~~]', '</italics>')
-    end
+        # convert h4
+        v = v.gsub('[==', '<h4>')
+        v = v.gsub('==]', '</h4>')
 
-    # replace linebreaks with paragraph xml elements
-    if v =~ /\r\n/
-      new_v = ''
-      brs = v.split("\r\n")
-      brs.each do |br|
-        new_v << '<paragraph>'
-        new_v << br
-        new_v << '</paragraph>'
+        # convert indent text
+        v = v.gsub('[--', '<indented>')
+        v = v.gsub('--]', '</indented>')
+
+        # convert indent text
+        v = v.gsub('[~~', '<italics>')
+        v = v.gsub('~~]', '</italics>')
       end
 
-      v = new_v
-    elsif (k == 'remediation') || (k == 'overview') || (k == 'poc') || (k == 'affected_hosts') || (k == 'references')
-      new_v = "<paragraph>#{v}</paragraph>"
-      v = new_v
+      # replace linebreaks with paragraph xml elements
+      if v =~ /\r\n/
+        new_v = ''
+        brs = v.split("\r\n")
+        brs.each do |br|
+          new_v << '<paragraph>'
+          new_v << br
+          new_v << '</paragraph>'
+        end
+
+        v = new_v
+      elsif (k == 'remediation') || (k == 'overview') || (k == 'poc') || (k == 'affected_hosts') || (k == 'references')
+        new_v = "<paragraph>#{v}</paragraph>"
+        v = new_v
+      end
     end
 
     hash[k] = v
@@ -271,19 +283,30 @@ end
 
 def meta_markup(text)
   unless text.nil?
-    new_text = text.gsub('<paragraph>', '&#x000A;').gsub('</paragraph>', '')
-    new_text = new_text.gsub('<bullet>', '*-').gsub('</bullet>', '-*')
-    new_text = new_text.gsub('<bullet1>', '*=').gsub('</bullet1>', '=*')
-    new_text = new_text.gsub('<h4>', '[==').gsub('</h4>', '==]')
-    new_text = new_text.gsub('<code>', '[[[').gsub('</code>', ']]]')
-    new_text = new_text.gsub('<indented>', '[--').gsub('</indented>', '--]')
-    new_text = new_text.gsub('<italics>', '[~~').gsub('</italics>', '~~]')
+    # If we are setup to use markdown
+    if settings and settings.markup_language == 'markdown'
+      require 'kramdown'
+
+      new_text = text.gsub('<paragraph>', '<p>').gsub('</paragraph>', '</p>')
+      document = Kramdown::Document.new(new_text, :html_to_native => true)
+      new_text = document.to_SerpicoHTMLKramdown
+    else
+      # Default to Serpico markup
+      new_text = text.gsub('<paragraph>', '&#x000A;').gsub('</paragraph>', '')
+      new_text = new_text.gsub('<bullet>', '*-').gsub('</bullet>', '-*')
+      new_text = new_text.gsub('<bullet1>', '*=').gsub('</bullet1>', '=*')
+      new_text = new_text.gsub('<h4>', '[==').gsub('</h4>', '==]')
+      new_text = new_text.gsub('<code>', '[[[').gsub('</code>', ']]]')
+      new_text = new_text.gsub('<indented>', '[--').gsub('</indented>', '--]')
+      new_text = new_text.gsub('<italics>', '[~~').gsub('</italics>', '~~]')
+    end
   end
 end
 
 # URL escaping messes up the inserted XML, this method switches it back to XML elements
 
 def meta_markup_unencode(findings_xml, report)
+
   # code tags get added in later
   findings_xml = findings_xml.gsub('[[[', '<code>')
   findings_xml = findings_xml.gsub(']]]', '</code>')
@@ -291,23 +314,64 @@ def meta_markup_unencode(findings_xml, report)
   # creates paragraphs
   findings_xml = findings_xml.gsub('&lt;paragraph&gt;', '<paragraph>')
   findings_xml = findings_xml.gsub('&lt;/paragraph&gt;', '</paragraph>')
-  # same for the bullets
-  findings_xml = findings_xml.gsub('&lt;bullet&gt;', '<bullet>')
-  findings_xml = findings_xml.gsub('&lt;/bullet&gt;', '</bullet>')
-  findings_xml = findings_xml.gsub('&lt;bullet1&gt;', '<bullet1>')
-  findings_xml = findings_xml.gsub('&lt;/bullet1&gt;', '</bullet1>')
-  # same for the h4
-  findings_xml = findings_xml.gsub('&lt;h4&gt;', '<h4>')
-  findings_xml = findings_xml.gsub('&lt;/h4&gt;', '</h4>')
+
   # same for the code markings
   findings_xml = findings_xml.gsub('&lt;code&gt;', '<code>')
   findings_xml = findings_xml.gsub('&lt;/code&gt;', '</code>')
-  # same for the indented text
-  findings_xml = findings_xml.gsub('&lt;indented&gt;', '<indented>')
-  findings_xml = findings_xml.gsub('&lt;/indented&gt;', '</indented>')
-  # same for the indented text
-  findings_xml = findings_xml.gsub('&lt;italics&gt;', '<italics>')
-  findings_xml = findings_xml.gsub('&lt;/italics&gt;', '</italics>')
+
+  if settings and settings.markup_language == 'markdown'
+    findings_xml = findings_xml.gsub('&lt;ol&gt;', '<ol>')
+    findings_xml = findings_xml.gsub('&lt;/ol&gt;', '</ol>')
+
+    findings_xml = findings_xml.gsub('&lt;ul&gt;', '<ul>')
+    findings_xml = findings_xml.gsub('&lt;/ul&gt;', '</ul>')
+
+    findings_xml = findings_xml.gsub('&lt;li&gt;', '<li>')
+    findings_xml = findings_xml.gsub('&lt;/li&gt;', '</li>')
+
+    findings_xml = findings_xml.gsub('&lt;strong&gt;', '<strong>')
+    findings_xml = findings_xml.gsub('&lt;/strong&gt;', '</strong>')
+
+    findings_xml = findings_xml.gsub('&lt;em&gt;', '<em>')
+    findings_xml = findings_xml.gsub('&lt;/em&gt;', '</em>')
+
+    findings_xml = findings_xml.gsub('&lt;h1&gt;', '<h1>')
+    findings_xml = findings_xml.gsub('&lt;/h1&gt;', '</h1>')
+
+    findings_xml = findings_xml.gsub('&lt;h2&gt;', '<h2>')
+    findings_xml = findings_xml.gsub('&lt;/h2&gt;', '</h2>')
+
+    findings_xml = findings_xml.gsub('&lt;h3&gt;', '<h3>')
+    findings_xml = findings_xml.gsub('&lt;/h3&gt;', '</h3>')
+
+    findings_xml = findings_xml.gsub('&lt;h5&gt;', '<h5>')
+    findings_xml = findings_xml.gsub('&lt;/h5&gt;', '</h5>')
+
+    findings_xml = findings_xml.gsub('&lt;h6&gt;', '<h6>')
+    findings_xml = findings_xml.gsub('&lt;/h6&gt;', '</h6>')
+
+    # We have to cleanout the aditional linebreaks required for markdown
+    findings_xml = findings_xml.gsub(/<\/ul>\n<\/paragraph><paragraph>/, '</ul>')
+    findings_xml = findings_xml.gsub(/<\/ol>\n<\/paragraph><paragraph>/, '</ol>')
+
+  else
+    # Default to Serpico markup
+    # same for the bullets
+    findings_xml = findings_xml.gsub('&lt;bullet&gt;', '<bullet>')
+    findings_xml = findings_xml.gsub('&lt;/bullet&gt;', '</bullet>')
+    findings_xml = findings_xml.gsub('&lt;bullet1&gt;', '<bullet1>')
+    findings_xml = findings_xml.gsub('&lt;/bullet1&gt;', '</bullet1>')
+    # same for the indented text
+    findings_xml = findings_xml.gsub('&lt;indented&gt;', '<indented>')
+    findings_xml = findings_xml.gsub('&lt;/indented&gt;', '</indented>')
+    # same for the indented text
+    findings_xml = findings_xml.gsub('&lt;italics&gt;', '<italics>')
+    findings_xml = findings_xml.gsub('&lt;/italics&gt;', '</italics>')
+  end
+
+  # same for the h4
+  findings_xml = findings_xml.gsub('&lt;h4&gt;', '<h4>')
+  findings_xml = findings_xml.gsub('&lt;/h4&gt;', '</h4>')
 
   # changes the <<any_var>> marks
   for i in report.instance_variables
@@ -443,15 +507,15 @@ def nist800(data)
   # +------------+----------+---------------+-----+----------+----------+----------+
 
   if nist800_total >= 120
-   nist_rating = "Critical" 
+   nist_rating = "Critical"
   elsif nist800_total <= 90 and nist800_total >= 80
-   nist_rating = "High" 
+   nist_rating = "High"
   elsif nist800_total <= 60 and nist800_total >= 30
-   nist_rating = "Moderate" 
+   nist_rating = "Moderate"
   elsif nist800_total <= 20 and nist800_total >= 1
-   nist_rating = "Low" 
+   nist_rating = "Low"
   elsif nist800_total == 0
-   nist_rating = "Informational" 
+   nist_rating = "Informational"
   end
 
   data['impact_val'] = impact_val
