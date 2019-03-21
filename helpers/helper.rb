@@ -290,6 +290,7 @@ def meta_markup(text)
       new_text = text.gsub('<paragraph>', '<p>').gsub('</paragraph>', '</p>')
       document = Kramdown::Document.new(new_text, :html_to_native => true)
       new_text = document.to_SerpicoHTMLKramdown
+      return new_text
     else
       # Default to Serpico markup
       new_text = text.gsub('<paragraph>', '&#x000A;').gsub('</paragraph>', '')
@@ -349,6 +350,9 @@ def meta_markup_unencode(findings_xml, report)
 
     findings_xml = findings_xml.gsub('&lt;h6&gt;', '<h6>')
     findings_xml = findings_xml.gsub('&lt;/h6&gt;', '</h6>')
+
+    findings_xml = findings_xml.gsub('&lt;pre&gt;', '<pre>')
+    findings_xml = findings_xml.gsub('&lt;/pre&gt;', '</pre>')
 
     # We have to cleanout the aditional linebreaks required for markdown
     findings_xml = findings_xml.gsub(/<\/ul>\n<\/paragraph><paragraph>/, '</ul>')
