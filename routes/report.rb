@@ -769,7 +769,13 @@ get '/report/:id/status' do
     FileUtils.copy_file(xslt_elem.docx_location, rand_file)
 
     ### IMAGE INSERT CODE
-    if docx_xml.to_s =~ /\[!!/
+    if settings && settings.markup_language == 'markdown'
+      report_has_images = (docx_xml.to_s =~ /&lt;img src="(?:[^"]|\\")*" alt="(?:[^"]|\\")*" \/&gt;/)
+    else
+      report_has_images = (docx_xml.to_s =~ /\[!!/)
+    end
+
+    if report_has_images
       # first we read in the current [Content_Types.xml]
       content_types = read_rels(rand_file, '[Content_Types].xml')
 
@@ -786,28 +792,62 @@ get '/report/:id/status' do
 
       docx_modify(rand_file, content_types, '[Content_Types].xml')
 
-      # replace all [!! image !!] in the document
-      imgs = docx_xml.to_s.split('[!!')
-      docx = imgs.first
-      imgs.delete_at(0)
+      if settings && settings.markup_language == 'markdown'
+        # replace all images in the document
+        # => Tags will look like :
+        #    &lt;img src="/report/2/attachments/13" alt="This is my caption" /&gt;
+        imgs = docx_xml.to_s.scan(/&lt;img src="(?:[^"]|\\")*" alt="(?:[^"]|\\")*" \/&gt;/)
+        sections = docx_xml.to_s.split(/&lt;img src="(?:[^"]|\\")*" alt="(?:[^"]|\\")*" \/&gt;/)
 
-      imgs.each do |image_i|
-        name = image_i.split('!!]').first.delete(' ')
-        end_xml = image_i.split('!!]').last
+        docx = sections.first
+        sections.delete_at(0)
 
-        # search for the image in the attachments
-        image = Attachments.first(description: name, report_id: id)
+        sections.each_with_index do |section, index|
+          matches = imgs[index].match(/src="\/report\/(\d+)\/attachments\/(\d+)" alt="((?:[^"]|\\")*)"/)
+          report_id = matches[1]
+          img_id = matches[2]
+          caption = matches[3]
 
-        # tries to prevent breakage in the case image dne
-        if image
-          docx = image_insert(docx, nil, rand_file, image, end_xml)
-        else
-          docx = docx.sub(/<w:p[^\>]*?>((?<!<w:p[ |>]).)*\z/m, '')
-          end_xml = end_xml.sub(/^<\/w:t>.*?<\/w:r>.*?<\/w:p>/m, '')
-          docx << end_xml
+          end_xml = sections[index]
+
+          # We now validate that this is the correct report to avoid DOR
+          if report_id == id
+            # search for the image in the attachments
+            image = Attachments.first(id: img_id, report_id: id)
+
+            # tries to prevent breakage in the case image dne
+            if image
+              # inserts the image
+              docx = image_insert(docx, caption, rand_file, image, end_xml)
+            else
+              docx << end_xml
+            end
+          else
+            docx << end_xml
+          end
+        end
+      else
+        # replace all [!! image !!] in the document
+        imgs = docx_xml.to_s.split('[!!')
+        docx = imgs.first
+        imgs.delete_at(0)
+
+        imgs.each do |image_i|
+          name = image_i.split('!!]').first.delete(' ')
+          end_xml = image_i.split('!!]').last
+
+          # search for the image in the attachments
+          image = Attachments.first(description: name, report_id: id)
+
+          # tries to prevent breakage in the case image dne
+          if image
+            # inserts the image
+            docx = image_insert(docx, nil, rand_file, image, end_xml)
+          else
+            docx << end_xml
+          end
         end
       end
-
     else
       # no images in finding
       docx = docx_xml.to_s
@@ -1441,7 +1481,14 @@ get '/report/:id/generate' do
     list_components[component.name] = xslt.transform(Nokogiri::XML(report_xml))
   end
 
-  if docx_xml.to_s =~ /&lt;img src="(?:[^"]|\\")*" alt="(?:[^"]|\\")*" \/&gt;/
+  #### IMAGE INSERT CODE
+  if settings && settings.markup_language == 'markdown'
+    report_has_images = (docx_xml.to_s =~ /&lt;img src="(?:[^"]|\\")*" alt="(?:[^"]|\\")*" \/&gt;/)
+  else
+    report_has_images = (docx_xml.to_s =~ /\[!!/)
+  end
+
+  if report_has_images
     # first we read in the current [Content_Types.xml]
     content_types = read_rels(rand_file, '[Content_Types].xml')
 
@@ -1458,74 +1505,60 @@ get '/report/:id/generate' do
 
     docx_modify(rand_file, content_types, '[Content_Types].xml')
 
-    # replace all images in the document
-    # => Tags will look like :
-    #    &lt;img src="/report/2/attachments/13" alt="This is my caption" /&gt;
-    imgs = docx_xml.to_s.scan(/&lt;img src="(?:[^"]|\\")*" alt="(?:[^"]|\\")*" \/&gt;/)
-    sections = docx_xml.to_s.split(/&lt;img src="(?:[^"]|\\")*" alt="(?:[^"]|\\")*" \/&gt;/)
+    if settings && settings.markup_language == 'markdown'
+      # replace all images in the document
+      # => Tags will look like :
+      #    &lt;img src="/report/2/attachments/13" alt="This is my caption" /&gt;
+      imgs = docx_xml.to_s.scan(/&lt;img src="(?:[^"]|\\")*" alt="(?:[^"]|\\")*" \/&gt;/)
+      sections = docx_xml.to_s.split(/&lt;img src="(?:[^"]|\\")*" alt="(?:[^"]|\\")*" \/&gt;/)
 
-    docx = sections.first
-    sections.delete_at(0)
+      docx = sections.first
+      sections.delete_at(0)
 
-    sections.each_with_index do |section, index|
-      matches = imgs[index].match(/src="\/report\/(\d+)\/attachments\/(\d+)" alt="((?:[^"]|\\")*)"/)
-      report_id = matches[1]
-      img_id = matches[2]
-      caption = matches[3]
+      sections.each_with_index do |section, index|
+        matches = imgs[index].match(/src="\/report\/(\d+)\/attachments\/(\d+)" alt="((?:[^"]|\\")*)"/)
+        report_id = matches[1]
+        img_id = matches[2]
+        caption = matches[3]
 
-      end_xml = sections[index]
+        end_xml = sections[index]
 
-      # We now validate that this is the correct report to avoid DOR
-      if report_id == id
+        # We now validate that this is the correct report to avoid DOR
+        if report_id == id
+          # search for the image in the attachments
+          image = Attachments.first(id: img_id, report_id: id)
+
+          # tries to prevent breakage in the case image dne
+          if image
+            # inserts the image
+            docx = image_insert(docx, caption, rand_file, image, end_xml)
+          else
+            docx << end_xml
+          end
+        else
+          docx << end_xml
+        end
+      end
+    else
+      # replace all [!! image !!] in the document
+      imgs = docx_xml.to_s.split('[!!')
+      docx = imgs.first
+      imgs.delete_at(0)
+
+      imgs.each do |image_i|
+        name = image_i.split('!!]').first.delete(' ')
+        end_xml = image_i.split('!!]').last
+
         # search for the image in the attachments
-        image = Attachments.first(id: img_id, report_id: id)
+        image = Attachments.first(description: name, report_id: id)
 
         # tries to prevent breakage in the case image dne
         if image
           # inserts the image
-          docx = image_insert(docx, caption, rand_file, image, end_xml)
+          docx = image_insert(docx, nil, rand_file, image, end_xml)
         else
           docx << end_xml
         end
-      else
-        docx << end_xml
-      end
-    end
-  elsif docx_xml.to_s =~ /\[!!/
-    # first we read in the current [Content_Types.xml]
-    content_types = read_rels(rand_file, '[Content_Types].xml')
-
-    # add the png and jpg handling to end of content types document
-    if content_types !~ /image\/jpg/
-      content_types = content_types.sub('</Types>', '<Default Extension="jpg" ContentType="image/jpg"/></Types>')
-    end
-    if content_types !~ /image\/png/
-      content_types = content_types.sub('</Types>', '<Default Extension="png" ContentType="image/png"/></Types>')
-    end
-    if content_types !~ /image\/jpeg/
-      content_types = content_types.sub('</Types>', '<Default Extension="jpeg" ContentType="image/jpeg"/></Types>')
-    end
-
-    docx_modify(rand_file, content_types, '[Content_Types].xml')
-
-    # replace all [!! image !!] in the document
-    imgs = docx_xml.to_s.split('[!!')
-    docx = imgs.first
-    imgs.delete_at(0)
-
-    imgs.each do |image_i|
-      name = image_i.split('!!]').first.delete(' ')
-      end_xml = image_i.split('!!]').last
-
-      # search for the image in the attachments
-      image = Attachments.first(description: name, report_id: id)
-
-      # tries to prevent breakage in the case image dne
-      if image
-        # inserts the image
-        docx = image_insert(docx, nil, rand_file, image, end_xml)
-      else
-        docx << end_xml
       end
     end
   else
