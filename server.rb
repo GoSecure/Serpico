@@ -270,7 +270,7 @@ rescue Exception
   return []
 end
 
-def image_insert(docx, rand_file, image, end_xml)
+def image_insert(docx, caption, rand_file, image, end_xml)
   # assign random id, ms requires it begin with a letter. weird.
   p_id = "d#{rand(36**7).to_s(36)}"
   name = image.description
@@ -317,6 +317,23 @@ def image_insert(docx, rand_file, image, end_xml)
   else
     docx << "<w:p><w:pPr><w:jc w:val=\"#{imgAlign}\"/></w:pPr><w:pict><v:shape id=\"myShape_#{p_id}\" type=\"#_x0000_t75\" style=\"width:#{width}; height:#{height}\"><v:imagedata r:id=\"#{p_id}\" o:title=\"\"/></v:shape></w:pict></w:p>"
   end
+
+  if caption != nil && caption != ""
+    captionSection = "<w:p>"\
+                      "<w:pPr>"\
+                        "<w:pStyle w:val=\"Caption\" />"\
+                        "<w:jc w:val=\"center\" />"\
+                      "</w:pPr>"\
+                      "<w:r><w:t xml:space=\"preserve\">Image </w:t></w:r>"\
+                      "<w:r><w:fldChar w:fldCharType=\"begin\" /></w:r>"\
+                      "<w:r><w:instrText xml:space=\"preserve\"> SEQ Image \\* ARABIC </w:instrText></w:r>"\
+                      "<w:r><w:fldChar w:fldCharType=\"end\" /></w:r>"\
+                      "<w:r><w:t xml:space=\"preserve\"> - #{caption}</w:t></w:r>"\
+                    "</w:p>"
+
+    docx << captionSection
+  end
+
   docx << end_xml
 
   # insert picture into zip

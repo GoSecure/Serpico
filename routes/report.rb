@@ -1,4 +1,5 @@
 require 'sinatra'
+require 'json'
 require 'odle'
 
 #####
@@ -799,7 +800,7 @@ get '/report/:id/status' do
 
         # tries to prevent breakage in the case image dne
         if image
-          docx = image_insert(docx, rand_file, image, end_xml)
+          docx = image_insert(docx, nil, rand_file, image, end_xml)
         else
           docx = docx.sub(/<w:p[^\>]*?>((?<!<w:p[ |>]).)*\z/m, '')
           end_xml = end_xml.sub(/^<\/w:t>.*?<\/w:r>.*?<\/w:p>/m, '')
@@ -916,6 +917,8 @@ get '/report/:id/findings/new' do
 
   @findings, @dread, @cvss, @cvssv3, @risk, @riskmatrix,@nist800 = get_scoring_findings(@report)
 
+  @markup_language = config_options['markup_language']
+
   haml :create_finding
 end
 
@@ -984,6 +987,8 @@ get '/report/:id/findings/:finding_id/edit' do
   end
 
   @findings, @dread, @cvss, @cvssv3, @risk, @riskmatrix,@nist800 = get_scoring_findings(@report)
+
+  @markup_language = config_options['markup_language']
 
   haml :findings_edit
 end
@@ -1227,7 +1232,7 @@ get '/report/:id/findings/:finding_id/preview' do
         # tries to prevent breakage in the case image dne
         if image
           # inserts the image into the doc
-          docx = image_insert(docx, rand_file, image, end_xml)
+          docx = image_insert(docx, nil, rand_file, image, end_xml)
         else
           docx = docx.sub(/<w:p[^\>]*?>((?<!<w:p[ |>]).)*\z/m, '')
           end_xml = end_xml.sub(/^<\/w:t>.*?<\/w:r>.*?<\/w:p>/m, '')
@@ -1435,8 +1440,58 @@ get '/report/:id/generate' do
     xslt = Nokogiri::XSLT(File.read(component.xslt_location))
     list_components[component.name] = xslt.transform(Nokogiri::XML(report_xml))
   end
-  ### IMAGE INSERT CODE
-  if docx_xml.to_s =~ /\[!!/
+
+  if docx_xml.to_s =~ /&lt;img src="(?:[^"]|\\")*" alt="(?:[^"]|\\")*" \/&gt;/
+    # first we read in the current [Content_Types.xml]
+    content_types = read_rels(rand_file, '[Content_Types].xml')
+
+    # add the png and jpg handling to end of content types document
+    if content_types !~ /image\/jpg/
+      content_types = content_types.sub('</Types>', '<Default Extension="jpg" ContentType="image/jpg"/></Types>')
+    end
+    if content_types !~ /image\/png/
+      content_types = content_types.sub('</Types>', '<Default Extension="png" ContentType="image/png"/></Types>')
+    end
+    if content_types !~ /image\/jpeg/
+      content_types = content_types.sub('</Types>', '<Default Extension="jpeg" ContentType="image/jpeg"/></Types>')
+    end
+
+    docx_modify(rand_file, content_types, '[Content_Types].xml')
+
+    # replace all images in the document
+    # => Tags will look like :
+    #    &lt;img src="/report/2/attachments/13" alt="This is my caption" /&gt;
+    imgs = docx_xml.to_s.scan(/&lt;img src="(?:[^"]|\\")*" alt="(?:[^"]|\\")*" \/&gt;/)
+    sections = docx_xml.to_s.split(/&lt;img src="(?:[^"]|\\")*" alt="(?:[^"]|\\")*" \/&gt;/)
+
+    docx = sections.first
+    sections.delete_at(0)
+
+    sections.each_with_index do |section, index|
+      matches = imgs[index].match(/src="\/report\/(\d+)\/attachments\/(\d+)" alt="((?:[^"]|\\")*)"/)
+      report_id = matches[1]
+      img_id = matches[2]
+      caption = matches[3]
+
+      end_xml = sections[index]
+
+      # We now validate that this is the correct report to avoid DOR
+      if report_id == id
+        # search for the image in the attachments
+        image = Attachments.first(id: img_id, report_id: id)
+
+        # tries to prevent breakage in the case image dne
+        if image
+          # inserts the image
+          docx = image_insert(docx, caption, rand_file, image, end_xml)
+        else
+          docx << end_xml
+        end
+      else
+        docx << end_xml
+      end
+    end
+  elsif docx_xml.to_s =~ /\[!!/
     # first we read in the current [Content_Types.xml]
     content_types = read_rels(rand_file, '[Content_Types].xml')
 
@@ -1468,7 +1523,7 @@ get '/report/:id/generate' do
       # tries to prevent breakage in the case image dne
       if image
         # inserts the image
-        docx = image_insert(docx, rand_file, image, end_xml)
+        docx = image_insert(docx, nil, rand_file, image, end_xml)
       else
         docx << end_xml
       end
@@ -2058,4 +2113,34 @@ get '/report/:id/report_plugins' do
     @menu.push(a)
   end
   haml :enabled_plugins
+end
+
+post '/report/:id/json/upload_image' do
+  report_id = params[:id]
+  @report = get_report(report_id)
+
+  # bail without a report
+  return {:error => "Invalid report id"}.to_json unless @report
+
+  file = params[:file]
+
+  # We use a random filename
+  rand_file = "./attachments/#{rand(36**36).to_s(36)}"
+
+  # reject if the file is above a certain limit
+  return 'File too large. 100MB limit' if file[:tempfile].size > 100_000_000
+
+  # open up a file handle and write the attachment
+  File.open(rand_file, 'wb') { |f| f.write(file[:tempfile].read) }
+
+  @attachment = Attachments.new
+  @attachment.filename_location = rand_file.to_s
+  @attachment.filename = file[:filename]
+  @attachment.description = CGI.escapeHTML(file[:filename]).tr(' ', '_').tr('/', '_').tr('\\', '_').tr('`', '_')
+  @attachment.report_id = report_id
+  @attachment.appendice = false
+  @attachment.save
+
+  content_type :json
+  {:filename => "/report/#{report_id}/attachments/#{@attachment.id}"}.to_json
 end
