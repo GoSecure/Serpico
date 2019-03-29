@@ -33,6 +33,8 @@ get '/master/findings/new' do
   @burpmap = Config['burpmap']
   @vulnmap = Config['vulnmap']
 
+  @markup_language = config_options['markup_language']
+
   haml :create_finding
 end
 
@@ -146,6 +148,8 @@ get '/master/findings/:id/edit' do
   @burp = BurpMapping.all(templatefindings_id: id) if @burpmap
 
   @vulnmaps = VulnMappings.all(templatefindings_id: id) if @vulnmap
+
+  @markup_language = config_options['markup_language']
 
   return 'No Such Finding' if @finding.nil?
 

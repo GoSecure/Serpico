@@ -206,7 +206,12 @@ post '/admin/config' do
   ft = params['finding_types'].split(',')
   udv = params['user_defined_variables'].split(',')
   rat = params['report_assessment_types'].split(',')
-  lang = params['languages'].delete(' ').split(',')
+
+  if params['languages']
+    lang = params['languages'].delete(' ').split(',')
+  else
+    lang = ["English"]
+  end
 
   Config['effort'] = params['effort'].split(',') if params['effort']
 

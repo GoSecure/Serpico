@@ -1,6 +1,12 @@
 %link{ :href => "/css/bootstrap-suggest.css", :rel => "stylesheet" }/
 %script{ :src => "/js/bootstrap-suggest.min.js" }
 
+- if @markup_language and @markup_language == 'markdown'
+  %link{ :href => "/markdown-editor/css/simplemde.min.css", :rel => "stylesheet" }/
+  %script{ :src => "/markdown-editor/js/simplemde.min.js" }
+  %script{ :src => "/markdown-editor/js/inline-attachment.js" }
+  %script{ :src => "/markdown-editor/js/codemirror-4.inline-attachment.js" }
+
 .d-flex.justify-content-between.flex-wrap.flex-md-nowrap.align-items-center.pt-3.pb-2.mb-3.border-bottom
   %h1.h2 #{@finding.title}
 
@@ -981,3 +987,122 @@
         updateCVSSSummary(true, false);
       });
     });
+
+- if @markup_language and @markup_language == 'markdown'
+  :css
+    .editor-toolbar.fullscreen,
+    .CodeMirror-fullscreen,
+    .editor-preview-side.editor-preview-active-side {
+      z-index: 1050;
+    }
+
+  :javascript
+    $(document).ready(function() {
+      $("textarea").each(function (index, textarea) {
+          var newMDE = new SimpleMDE({
+            element: textarea,
+            toolbar: [
+              {
+                name: "bold",
+                action: SimpleMDE.toggleBold,
+                className: "fas fa-bold",
+                title: "Bold"
+              },
+              {
+                name: "italic",
+                action: SimpleMDE.toggleItalic,
+                className: "fas fa-italic",
+                title: "Italic"
+              },
+              {
+                name: "heading",
+                action: SimpleMDE.toggleHeading1,
+                className: "fas fa-heading",
+                title: "Heading"
+              },
+              "|",
+              {
+                name: "code",
+                action: SimpleMDE.toggleCodeBlock,
+                className: "fas fa-code",
+                title: "Code"
+              },
+              {
+                name: "unordered-list",
+                action: SimpleMDE.toggleUnorderedList,
+                className: "fas fa-list-ul",
+                title: "Generic List"
+              },
+              // Links are not yet supported by the markdown feature
+              //{
+              //  name: "link",
+              //  action: SimpleMDE.drawLink,
+              //  className: "fas fa-link",
+              //  title: "Create Link"
+              //},
+              //"|",
+              // Uploading images from this page is not yet supported by the markdown feature
+              //{
+              //  name: "image",
+              //  action:  SimpleMDE.drawImage,
+              //  className: "fas fa-image",
+              //  title: "Insert Image"
+              //},
+              "|",
+              {
+                name: "fullscreen",
+                action: SimpleMDE.toggleFullScreen,
+                className: "fas fa-expand-arrows-alt",
+                title: "Toggle Fullscreen"
+              },
+              {
+                name: "side-by-side",
+                action: SimpleMDE.toggleSideBySide,
+                className: "fas fa-columns",
+                title: "Toggle Side by Side"
+              }
+            ],
+            blockStyles: {
+              code: "~~~"
+            },
+            autoDownloadFontAwesome: false,
+            spellChecker: false,
+            parsingConfig: {
+              strikethrough: false
+            },
+            shortcuts: {
+              "toggleBlockquote": null,
+              "drawLink": null,
+              "togglePreview": null,
+              "drawTable": null,
+              "drawImage": null,
+              "toggleHeadingBigger": null
+            }
+          });
+      });
+    });
+
+-if !@master
+  :javascript
+    $("textarea").each(function (index, textarea) {
+      inlineAttachment.editors.codemirror4.attach(newMDE.codemirror, {
+        uploadUrl: "/report/#{@report.id}/json/upload_image",
+        onFileUploadResponse: function(xhr) {
+            var result = JSON.parse(xhr.responseText),
+            filename = result[this.settings.jsonFieldName];
+
+            if (result && filename) {
+                var newValue;
+                if (typeof this.settings.urlText === 'function') {
+                    newValue = this.settings.urlText.call(this, filename, result);
+                } else {
+                    newValue = this.settings.urlText.replace(this.filenameTag, filename);
+                }
+                var text = this.editor.getValue().replace(this.lastValue, newValue);
+                this.editor.setValue(text);
+                this.settings.onFileUploaded.call(this, filename);
+            }
+            return false;
+        }
+      });
+    }
