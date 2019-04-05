@@ -232,7 +232,7 @@ def url_escape_hash(hash)
         require 'kramdown'
         require './helpers/serpico_markdown_converter'
 
-        document = Kramdown::Document.new(v, :auto_ids => false)
+        document = Kramdown::Document.new(v, :auto_ids => false, :line_width => -1)
         v = document.to_SerpicoMarkdownHTML
       else
         # Default to Serpico markup
@@ -288,7 +288,7 @@ def meta_markup(text)
       require 'kramdown'
 
       new_text = text.gsub('<paragraph>', '<p>').gsub('</paragraph>', '</p>')
-      document = Kramdown::Document.new(new_text, :html_to_native => true)
+      document = Kramdown::Document.new(new_text, :auto_ids => false, :html_to_native => true, :line_width => -1)
       new_text = document.to_SerpicoHTMLKramdown
       return new_text
     else
