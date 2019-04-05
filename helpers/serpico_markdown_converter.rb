@@ -46,9 +46,14 @@ class SerpicoHTMLKramdown < Kramdown::Converter::Kramdown
         res = res.gsub(/\n\n$/, "\n")
       end
 
+      # Unescape the default escaping of headers
       if (el.children.count > 0 && el.children[0].type == :header)
         res = res.gsub(/\\\#/, "#")
       end
+
+      # Unescape the default escaping of quotes and double quotes
+      res = res.gsub(/\\\'/, "'")
+      res = res.gsub(/\\\"/, "\"")
     end
 
     res
