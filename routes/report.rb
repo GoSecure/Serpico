@@ -804,21 +804,28 @@ get '/report/:id/status' do
 
         sections.each_with_index do |section, index|
           matches = imgs[index].match(/src="\/report\/(\d+)\/attachments\/(\d+)" alt="((?:[^"]|\\")*)"/)
-          report_id = matches[1]
-          img_id = matches[2]
-          caption = matches[3]
 
-          end_xml = sections[index]
+          # In case somebody gets creative and tries to add images
+          # from other sites or with a different URL format
+          if matches
+            report_id = matches[1]
+            img_id = matches[2]
+            caption = matches[3]
 
-          # We now validate that this is the correct report to avoid DOR
-          if report_id == id
-            # search for the image in the attachments
-            image = Attachments.first(id: img_id, report_id: id)
+            end_xml = sections[index]
 
-            # tries to prevent breakage in the case image dne
-            if image
-              # inserts the image
-              docx = image_insert(docx, caption, rand_file, image, end_xml)
+            # We now validate that this is the correct report to avoid DOR
+            if report_id == id
+              # search for the image in the attachments
+              image = Attachments.first(id: img_id, report_id: id)
+
+              # tries to prevent breakage in the case image dne
+              if image
+                # inserts the image
+                docx = image_insert(docx, caption, rand_file, image, end_xml)
+              else
+                docx << end_xml
+              end
             else
               docx << end_xml
             end
